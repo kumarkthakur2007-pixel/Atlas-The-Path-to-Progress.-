@@ -1,0 +1,60 @@
+
+@keyframes float{ 0%,100%{ transform:translateY(0) translateX(0);} 50%{ transform:translateY(-30px) translateX(20px);} }
+
+
+@keyframes splashBgFade{ from{ opacity:0; } to{ opacity:1; } }
+
+
+@keyframes splashParticleFloat{
+  0%{ transform:translateY(0) translateX(0); opacity:0; }
+  15%{ opacity:1; }
+  85%{ opacity:1; }
+  100%{ transform:translateY(-50px) translateX(12px); opacity:0; }
+}
+
+
+@keyframes splashLogoReveal{ 0%{ opacity:0; transform:scale(.85); filter:blur(16px); } 100%{ opacity:1; transform:scale(1); filter:blur(0); } }
+
+
+@keyframes splashBreathe{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.035); } }
+
+
+@keyframes splashGlow{ 0%,100%{ box-shadow:0 20px 50px rgba(111,157,36,0.28), inset 0 1px 0 rgba(255,255,255,0.6);} 50%{ box-shadow:0 24px 60px rgba(111,157,36,0.42), inset 0 1px 0 rgba(255,255,255,0.7);} }
+
+
+@keyframes splashSweep{
+  0%{ transform:translateX(-160%) skewX(-18deg); opacity:0; }
+  12%{ opacity:1; }
+  88%{ opacity:1; }
+  100%{ transform:translateX(220%) skewX(-18deg); opacity:0; }
+}
+
+
+@keyframes splashTextUp{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
+
+
+@keyframes splashLoaderFill{ from{ width:0%; } to{ width:100%; } }
+
+
+@keyframes cardIn{ from{ opacity:0; transform:translateY(24px) scale(.97);} to{opacity:1; transform:translateY(0) scale(1);} }
+
+
+@keyframes shakeCard{ 10%,90%{transform:translateX(-2px);} 20%,80%{transform:translateX(4px);} 30%,50%,70%{transform:translateX(-8px);} 40%,60%{transform:translateX(8px);} }
+
+
+@keyframes pageIn{ from{ opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+
+@keyframes logoFloat{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-12px);} }
+
+
+@keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+
+
+@keyframes modalIn{ from{ opacity:0; transform:translateY(20px) scale(.96);} to{opacity:1; transform:translateY(0) scale(1);} }
+
+
+@keyframes toastIn{ from{opacity:0; transform:translateX(30px);} to{opacity:1; transform:translateX(0);} }
+
+
+@keyframes confettiFall{ to{ transform: translateY(340px) rotate(360deg); opacity:0; } }

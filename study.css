@@ -1,0 +1,22 @@
+
+
+/* ---- Pomodoro ---- */
+.pomo-wrap{ display:flex; flex-direction:column; align-items:center; padding:20px 0; }
+
+
+.pomo-ring{ position:relative; width:220px; height:220px; }
+
+
+.pomo-time{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; }
+
+
+.pomo-time .t{ font-size:42px; font-weight:800; font-family:var(--font-display); }
+
+
+.pomo-time .s{ font-size:12.5px; color:var(--text-2); font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
+
+
+.pomo-modes{ display:flex; gap:8px; margin:20px 0; flex-wrap:wrap; justify-content:center; }
+
+
+.pomo-controls{ display:flex; gap:10px; }

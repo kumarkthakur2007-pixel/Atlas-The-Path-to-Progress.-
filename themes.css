@@ -1,0 +1,5 @@
+
+[data-theme="dark"] .navlink.active{ color: var(--accent); }
+
+
+[data-theme="dark"] .mark.logo-mark{ background: rgba(255,255,255,0.12); }

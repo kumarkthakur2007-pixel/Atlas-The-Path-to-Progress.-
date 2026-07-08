@@ -1,0 +1,41 @@
+
+
+/* Responsive */
+@media (max-width:1100px){
+  .grid-4{ grid-template-columns:repeat(2,1fr); }
+  .grid-3{ grid-template-columns:repeat(2,1fr); }
+  .grid-2{ grid-template-columns:1fr; }
+  .grid-6{ grid-template-columns:repeat(3,1fr); }
+  .span-2{ grid-column:span 1; }
+  .dash-grid{ grid-template-columns:1fr; }
+  .progress-stats-grid{ grid-template-columns:1fr; }
+  .roadmap-grid{ grid-template-columns:repeat(2,1fr); }
+  .connect-grid{ grid-template-columns:repeat(2,1fr); }
+  .widget-grid{ grid-template-columns:repeat(3,1fr); }
+  .widget-card[data-span="3"]{ grid-column: span 3; }
+}
+
+
+@media (max-width:860px){
+  #sidebar{ position:fixed; left:0; top:0; height:100vh; margin:0; border-radius:0; transform:translateX(-100%); width:270px; }
+  #sidebar.open{ transform:translateX(0); }
+  .menu-toggle{ display:flex; }
+  #main{ padding:12px 14px 40px; }
+  .grid-4,.grid-3{ grid-template-columns:1fr; }
+  .grid-6{ grid-template-columns:repeat(2,1fr); }
+  .field-row{ grid-template-columns:1fr; }
+  .profile-form-grid{ grid-template-columns:1fr; }
+  .widget-grid{ grid-template-columns:repeat(2,1fr); }
+  .widget-card[data-span="3"]{ grid-column: span 2; }
+  .widget-toolbar{ flex-direction:column; align-items:flex-start; }
+  .hero-date{ position:static; margin-top:14px; text-align:left; }
+  .welcome-card .hero-name{ font-size:34px; }
+  .date-big{ font-size:44px; }
+  .progress-top{ flex-direction:column; align-items:flex-start; }
+  .about-hero{ padding:40px 20px 34px; }
+  .about-hero h1{ font-size:34px; }
+  .roadmap-grid{ grid-template-columns:1fr; }
+  .connect-grid{ grid-template-columns:1fr; }
+  .habit-days{ margin-left:0; width:100%; justify-content:flex-start; overflow-x:auto; padding-bottom:2px; }
+  .dev-profile-head{ text-align:center; justify-content:center; }
+}

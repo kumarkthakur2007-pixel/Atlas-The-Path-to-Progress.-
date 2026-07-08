@@ -1,0 +1,22 @@
+/* ============================================================
+   ATLAS — STYLE ENTRY POINT
+   ============================================================
+   Loads every stylesheet in the correct cascade order. Import
+   order matters: tokens first, then primitives (which include
+   the base resets: *, body, scrollbars, headings, #app/#main
+   shell, .page visibility), then features, then responsive
+   overrides last so they always win.
+   ============================================================ */
+@import url('variables.css');
+@import url('animations.css');
+@import url('components.css');
+@import url('sidebar.css');
+@import url('auth.css');
+@import url('dashboard.css');
+@import url('profile.css');
+@import url('admin.css');
+@import url('study.css');
+@import url('calendar.css');
+@import url('settings.css');
+@import url('themes.css');
+@import url('responsive.css');

@@ -1,0 +1,174 @@
+
+
+/* ============================================================
+   LOGIN SCREEN
+   ============================================================ */
+#loginScreen{
+  position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(143,214,92,0.25), transparent 55%),
+    radial-gradient(1000px 700px at 85% 85%, rgba(47,95,103,0.18), transparent 55%),
+    linear-gradient(160deg, #EAF6E3, #F8F9F7 45%, #E6F1EC);
+  overflow:hidden;
+}
+
+
+.orb{ position:absolute; border-radius:50%; filter:blur(60px); opacity:.55; animation: float 14s ease-in-out infinite; }
+
+
+.orb1{ width:420px; height:420px; background: radial-gradient(circle, var(--accent), transparent 70%); top:-120px; left:-100px; }
+
+
+.orb2{ width:360px; height:360px; background: radial-gradient(circle, var(--deep-teal), transparent 70%); bottom:-140px; right:-80px; animation-delay:-6s; }
+
+
+.orb3{ width:280px; height:280px; background: radial-gradient(circle, var(--soft-lime), transparent 70%); bottom:20%; left:8%; animation-delay:-3s; }
+
+
+
+.login-card{
+  width:min(420px, 92vw); padding:44px 38px; border-radius:32px;
+  animation: cardIn .7s var(--ease);
+  z-index:2;
+}
+
+
+
+.login-logo{ display:flex; align-items:center; gap:12px; margin-bottom:28px; }
+
+
+.login-logo .mark{
+  width:44px; height:44px; border-radius:13px;
+  background: linear-gradient(135deg, var(--natural-green), var(--accent));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 8px 22px rgba(111,157,36,0.4);
+}
+
+
+.login-logo .mark svg{ width:24px; height:24px; color:#0F1A0C; }
+
+
+.login-logo span{ font-family:var(--font-display); font-weight:800; font-size:21px; }
+
+
+
+.login-title{ font-size:28px; font-weight:800; margin-bottom:6px; }
+
+
+.login-sub{ color:var(--text-2); font-size:14.5px; margin-bottom:30px; }
+
+
+
+.tab-switch{ display:flex; background:rgba(255,255,255,0.4); border:1px solid var(--glass-border); border-radius:14px; padding:4px; margin-bottom:24px; }
+
+
+.tab-switch button{ flex:1; padding:10px; border-radius:11px; font-weight:600; font-size:13.5px; color:var(--text-2); transition:all .25s var(--ease); }
+
+
+.tab-switch button.active{ background: linear-gradient(135deg, var(--natural-green), var(--accent)); color:#0F1A0C; box-shadow:0 6px 16px rgba(111,157,36,.35); }
+
+
+
+.remember-row{ display:flex; align-items:center; justify-content:space-between; margin:2px 0 22px; font-size:13.5px; }
+
+
+.remember-row label{ display:flex; align-items:center; gap:8px; margin:0; color:var(--text-2); font-weight:500; cursor:pointer; }
+
+
+.check{ width:18px; height:18px; border-radius:6px; border:1.5px solid var(--glass-border); background:rgba(255,255,255,.5); display:inline-flex; align-items:center; justify-content:center; transition:all .2s; }
+
+
+.check.on{ background: var(--natural-green); border-color:var(--natural-green); }
+
+
+.check.on svg{ width:12px; height:12px; color:#fff; }
+
+
+.forgot{ color:var(--natural-green); font-weight:600; }
+
+
+
+.divider{ display:flex; align-items:center; gap:14px; margin:22px 0; color:var(--text-3); font-size:12.5px; }
+
+
+
+.oauth-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+
+.oauth-btn{ display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; border-radius:14px; background:rgba(255,255,255,.5); border:1px solid var(--glass-border); font-weight:600; font-size:13.5px; transition:all .2s var(--ease); }
+
+
+.oauth-btn:hover{ transform:translateY(-2px); box-shadow:var(--shadow-soft); }
+
+
+
+.login-hint{ margin-top:22px; text-align:center; font-size:12.5px; color:var(--text-3); }
+
+
+.err-msg{ background:rgba(232,91,91,0.12); color:var(--danger); border:1px solid rgba(232,91,91,0.25); padding:10px 14px; border-radius:12px; font-size:13px; margin-bottom:16px; display:none; }
+
+
+
+/* ============================================================
+   LOCK SCREEN (PIN)
+   ============================================================ */
+#lockScreen{
+  position:fixed; inset:0; z-index:210; display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(143,214,92,0.25), transparent 55%),
+    radial-gradient(1000px 700px at 85% 85%, rgba(47,95,103,0.18), transparent 55%),
+    linear-gradient(160deg, #EAF6E3, #F8F9F7 45%, #E6F1EC);
+  overflow:hidden;
+}
+
+
+.lock-card{ width:min(360px, 90vw); padding:40px 34px; border-radius:30px; text-align:center; z-index:2; animation: cardIn .5s var(--ease); }
+
+
+.lock-greet{ font-size:13.5px; color:var(--text-2); font-weight:600; }
+
+
+.lock-title{ font-size:21px; font-weight:800; margin-top:4px; margin-bottom:26px; }
+
+
+.pin-dots{ display:flex; justify-content:center; gap:14px; margin-bottom:8px; }
+
+
+.pin-dot{ width:16px; height:16px; border-radius:50%; border:2px solid rgba(111,157,36,0.35); background:transparent; transition: all .18s var(--ease); }
+
+
+.pin-dot.filled{ background: linear-gradient(135deg,var(--natural-green),var(--accent)); border-color:transparent; transform:scale(1.05); }
+
+
+.pin-error{ height:18px; color:var(--danger); font-size:12.5px; font-weight:700; margin:8px 0 4px; opacity:0; transition:opacity .2s; }
+
+
+.pin-error.show{ opacity:1; }
+
+
+.lock-card.shake{ animation: shakeCard .4s ease; }
+
+
+.pin-keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:18px; }
+
+
+.pin-key{ aspect-ratio:1; border-radius:18px; background:rgba(255,255,255,0.4); border:1px solid var(--glass-border); font-size:20px; font-weight:700; color:var(--text-1); display:flex; align-items:center; justify-content:center; transition:all .18s var(--ease); }
+
+
+.pin-key:hover{ background:rgba(255,255,255,0.6); transform:translateY(-2px); }
+
+
+.pin-key:active{ transform:scale(.92); }
+
+
+.pin-key.ghost{ background:transparent; border:none; }
+
+
+.lock-links{ display:flex; justify-content:space-between; margin-top:26px; font-size:12.5px; }
+
+
+.lock-links a{ color:var(--natural-green); font-weight:700; }
+
+
+
+.mark.logo-mark, .login-logo .mark.logo-mark{ background: rgba(255,255,255,0.75); padding:5px; box-shadow: 0 6px 16px rgba(111,157,36,0.18), inset 0 1px 0 rgba(255,255,255,0.6); }

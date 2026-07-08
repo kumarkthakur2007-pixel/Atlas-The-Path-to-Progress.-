@@ -1,0 +1,31 @@
+
+
+/* ---- Profile page ---- */
+.profile-head{ display:flex; align-items:center; gap:22px; margin-bottom:28px; flex-wrap:wrap; }
+
+
+.profile-photo-wrap{ position:relative; width:92px; height:92px; flex-shrink:0; cursor:pointer; }
+
+
+.profile-photo{ width:92px; height:92px; border-radius:26px; object-fit:cover; }
+
+
+.profile-photo-fallback{ background:linear-gradient(135deg,var(--deep-teal),var(--natural-green)); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:32px; box-shadow:0 12px 28px rgba(47,95,103,0.28); }
+
+
+.profile-photo-edit{ position:absolute; bottom:-4px; right:-4px; width:28px; height:28px; border-radius:10px; background:var(--natural-green); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(111,157,36,0.4); border:2px solid var(--frost-white); }
+
+
+.profile-name{ font-size:22px; font-weight:800; margin-bottom:8px; }
+
+
+.profile-meta-row{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+
+
+.profile-meta-item{ display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-2); font-weight:600; }
+
+
+.profile-form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+
+
+.profile-save-row{ display:flex; justify-content:flex-end; gap:10px; margin-top:6px; }

@@ -1,0 +1,60 @@
+
+/* ============================================================
+   AURA — DESIGN TOKENS
+   ============================================================ */
+:root{
+  --frost-white:#F8F9F7;
+  --soft-lime:#D6E34B;
+  --natural-green:#6F9D24;
+  --deep-teal:#2F5F67;
+  --olive-forest:#4A5632;
+  --accent:#8FD65C;
+  --success:#43C463;
+  --warning:#F5B942;
+  --danger:#E85B5B;
+
+  --bg-0:#F7FAF6;
+  --bg-1:#EFF7EC;
+  --bg-2:#E7F4E0;
+
+  --text-1:#1C2418;
+  --text-2:#5B6B57;
+  --text-3:#8B9A86;
+
+  --glass-fill: rgba(255,255,255,0.38);
+  --glass-fill-strong: rgba(255,255,255,0.58);
+  --glass-border: rgba(255,255,255,0.55);
+  --glass-blur: 38px;
+
+  --r-lg: 26px;
+  --r-md: 18px;
+  --r-sm: 12px;
+
+  --shadow-soft: 0 8px 40px rgba(47,95,103,0.10), 0 2px 8px rgba(47,95,103,0.06);
+  --shadow-lift: 0 20px 60px rgba(47,95,103,0.16), 0 4px 16px rgba(47,95,103,0.08);
+
+  --font-display:'Manrope', 'Inter', -apple-system, sans-serif;
+  --font-body:'Inter', -apple-system, sans-serif;
+
+  --ease: cubic-bezier(.22,1,.36,1);
+}
+
+
+
+[data-theme="dark"]{
+  --bg-0:#0E1512;
+  --bg-1:#121B16;
+  --bg-2:#16211A;
+  --text-1:#F1F5EF;
+  --text-2:#A9B8A4;
+  --text-3:#6E7C69;
+  --glass-fill: rgba(30,40,34,0.45);
+  --glass-fill-strong: rgba(30,40,34,0.65);
+  --glass-border: rgba(255,255,255,0.08);
+  --shadow-soft: 0 8px 40px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2);
+  --shadow-lift: 0 20px 60px rgba(0,0,0,0.45), 0 4px 16px rgba(0,0,0,0.25);
+  --frost-white:#182019;
+}
+
+
+[data-theme="dark"] input, [data-theme="dark"] textarea, [data-theme="dark"] select{ background: rgba(255,255,255,0.04); }

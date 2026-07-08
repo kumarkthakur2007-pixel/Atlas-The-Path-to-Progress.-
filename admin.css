@@ -1,0 +1,10 @@
+/* ============================================================
+   ADMIN PANEL
+   ============================================================
+   The Admin Panel intentionally has no unique styling of its own —
+   it's built entirely from shared primitives in components.css
+   (.card, .stat-card, .task-row, .pill, .activity-item, etc.).
+   This file exists as the designated extension point for any
+   admin-only components added later (e.g. system health widgets,
+   user management tables) without touching components.css.
+   ============================================================ */
