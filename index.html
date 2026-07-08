@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Atlas — Self Management</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6F9D24">
+<meta name="background-color" content="#F7FAF6">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Atlas">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="152x152" href="assets/icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="192x192" href="assets/icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/icons/icon-512.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js" defer onerror="console.warn('Atlas: Chart.js CDN failed to load — charts will be skipped gracefully.')"></script>
+<script src="https://unpkg.com/lucide@1.23.0" defer onerror="console.warn('Atlas: lucide CDN failed to load — icons will be skipped gracefully.')"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============================================================ LAUNCH SPLASH ============================================================ -->
+<div id="splashScreen">
+  <div class="splash-particles" id="splashParticles"></div>
+  <div class="splash-logo-wrap">
+    <div class="splash-logo">
+      <img class="atlas-logo-img" alt="Atlas">
+      <div class="splash-sweep"></div>
+    </div>
+    <div class="splash-word">Atlas</div>
+    <div class="splash-tagline">Organize. Focus. Grow.</div>
+    <div class="splash-loader"><div class="splash-loader-fill"></div></div>
+  </div>
+</div>
+<script>try{ if(sessionStorage.getItem('atlas_splash_shown')){ document.getElementById('splashScreen').style.display='none'; } }catch(e){}</script>
+
+<!-- ============================================================ LOGIN SCREEN ============================================================ -->
+<div id="loginScreen">
+  <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+  <div class="login-card glass">
+    <div class="login-logo">
+      <div class="mark logo-mark"><img class="atlas-logo-img" alt="Atlas logo"></div>
+      <span>Atlas</span>
+    </div>
+    <div class="login-title">Welcome back</div>
+    <div class="login-sub">Sign in to continue your focus, calmly.</div>
+
+    <div class="tab-switch">
+      <button class="active" data-mode="login" onclick="setAuthMode('login')">Log in</button>
+      <button data-mode="signup" onclick="setAuthMode('signup')">Sign up</button>
+    </div>
+
+    <div class="err-msg" id="authErr"></div>
+
+    <form id="authForm" onsubmit="handleAuth(event)">
+      <div class="field" id="nameField" style="display:none">
+        <label>Full name</label>
+        <input type="text" id="authName" placeholder="Alex Rivers">
+      </div>
+      <div class="field">
+        <label>Username</label>
+        <input type="text" id="authUser" placeholder="alex or admin" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="authPass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="remember-row">
+        <label onclick="toggleRemember(event)"><span class="check" id="rememberCheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span> Remember me</label>
+        <a href="#" class="forgot" onclick="showToast('info','Password reset link sent (simulated).'); return false;">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%">Sign in <i data-lucide="arrow-right" style="width:16px;height:16px"></i></button>
+    </form>
+
+    <div class="divider">or continue with</div>
+    <div class="oauth-row">
+      <button class="oauth-btn" onclick="oauthFake('Google')">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Google
+      </button>
+      <button class="oauth-btn" onclick="oauthFake('Apple')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.03-2.96 2.42-4.38 2.53-4.45-1.38-2.02-3.53-2.3-4.29-2.33-1.83-.19-3.57 1.08-4.5 1.08-.93 0-2.36-1.05-3.87-1.02-1.99.03-3.83 1.16-4.85 2.94-2.07 3.59-.53 8.9 1.49 11.81 1 1.43 2.18 3.03 3.73 2.97 1.5-.06 2.06-.97 3.87-.97 1.8 0 2.31.97 3.89.94 1.61-.03 2.63-1.46 3.61-2.9 1.14-1.67 1.61-3.28 1.63-3.36-.04-.02-3.12-1.2-3.15-4.71h.91zM14.5 3.6c.82-1 1.38-2.38 1.22-3.75-1.18.05-2.62.79-3.47 1.78-.76.88-1.43 2.29-1.25 3.63 1.31.1 2.65-.66 3.5-1.66z"/></svg>
+        Apple
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ LOCK SCREEN (PIN) ============================================================ -->
+<div id="lockScreen" class="hidden">
+  <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+  <div class="lock-card glass">
+    <div class="logo-badge logo-badge-md glass" style="margin:0 auto 18px;"><img class="atlas-logo-img" alt="Atlas logo"></div>
+    <div class="lock-greet" id="lockGreet">Welcome back</div>
+    <div class="lock-title">Enter your PIN</div>
+    <div class="pin-dots" id="pinDots"></div>
+    <div class="pin-error" id="pinError">Incorrect PIN — try again</div>
+    <div class="pin-keypad" id="pinKeypad"></div>
+    <div class="lock-links">
+      <a href="#" onclick="forgotPin(); return false;">Forgot PIN?</a>
+      <a href="#" onclick="logoutFromLock(); return false;">Log out instead</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ APP SHELL ============================================================ -->
+<div id="app" class="hidden">
+  <aside id="sidebar" class="glass">
+    <div class="brand">
+      <div class="mark logo-mark"><img class="atlas-logo-img" alt="Atlas logo"></div>
+      <span class="brand-name">Atlas</span>
+    </div>
+
+    <nav class="sidebar-scroll">
+    <div class="nav-group-label">Overview</div>
+    <ul class="navlist">
+      <li><a class="navlink" data-page="profile" onclick="goPage('profile')"><i data-lucide="user-circle"></i>Profile</a></li>
+      <li><a class="navlink active" data-page="dashboard" onclick="goPage('dashboard')"><i data-lucide="layout-grid"></i>Dashboard</a></li>
+      <li><a class="navlink" data-page="analytics" onclick="goPage('analytics')"><i data-lucide="bar-chart-3"></i>Analytics</a></li>
+    </ul>
+
+    <div class="nav-group-label">Plan</div>
+    <ul class="navlist">
+      <li><a class="navlink" data-page="tasks" onclick="goPage('tasks')"><i data-lucide="check-square"></i>Tasks</a></li>
+      <li><a class="navlink" data-page="planner" onclick="goPage('planner')"><i data-lucide="calendar-days"></i>Daily Planner</a></li>
+      <li><a class="navlink" data-page="goals" onclick="goPage('goals')"><i data-lucide="target"></i>Goals</a></li>
+    </ul>
+
+    <div class="nav-group-label">Grow</div>
+    <ul class="navlist">
+      <li><a class="navlink" data-page="study" onclick="goPage('study')"><i data-lucide="book-open"></i>Study Tracker</a></li>
+      <li><a class="navlink" data-page="habits" onclick="goPage('habits')"><i data-lucide="repeat"></i>Habit Tracker</a></li>
+      <li><a class="navlink" data-page="health" onclick="goPage('health')"><i data-lucide="heart-pulse"></i>Health</a></li>
+      <li><a class="navlink" data-page="journal" onclick="goPage('journal')"><i data-lucide="notebook-pen"></i>Journal</a></li>
+      <li><a class="navlink" data-page="achievements" onclick="goPage('achievements')"><i data-lucide="trophy"></i>Achievements</a></li>
+    </ul>
+
+    <div class="nav-group-label">Money</div>
+    <ul class="navlist">
+      <li><a class="navlink" data-page="expenses" onclick="goPage('expenses')"><i data-lucide="wallet"></i>Expense Tracker</a></li>
+    </ul>
+
+    <div class="nav-group-label">System</div>
+    <ul class="navlist">
+      <li><a class="navlink" data-page="settings" onclick="goPage('settings')"><i data-lucide="settings"></i>Settings</a></li>
+      <li><a class="navlink" data-page="about" onclick="goPage('about')"><i data-lucide="info"></i>About Atlas</a></li>
+      <li id="adminNav"><a class="navlink" data-page="admin" onclick="goPage('admin')"><i data-lucide="shield"></i>Admin Panel</a></li>
+    </ul>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="user-chip">
+        <div class="avatar" id="userAvatar">A</div>
+        <div class="u-meta">
+          <div class="u-name" id="userNameChip">Alex</div>
+          <div class="u-role" id="userRoleChip">Member</div>
+        </div>
+        <button class="logout-btn" onclick="logout()" title="Log out"><i data-lucide="log-out" style="width:17px;height:17px"></i></button>
+      </div>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div id="topbar" class="glass">
+      <button class="btn-icon menu-toggle" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+      <div class="searchbox" id="globalSearchWrap" style="position:relative;">
+        <i data-lucide="search"></i>
+        <input type="text" id="globalSearch" placeholder="Search tasks, notes, habits…" autocomplete="off" oninput="globalSearchHandler(this.value)" onfocus="globalSearchHandler(this.value)">
+        <div id="globalSearchResults" class="glass" style="display:none; position:absolute; top:calc(100% + 8px); left:0; width:340px; max-width:80vw; max-height:380px; overflow-y:auto; border-radius:18px; padding:10px; z-index:80;"></div>
+      </div>
+      <div class="top-actions">
+        <span id="offlineBadge" class="pill" style="display:none; background:rgba(245,185,66,0.18); color:#8a6410;"><i data-lucide="wifi-off" style="width:12px;height:12px"></i> Offline</span>
+        <button class="btn-icon theme-toggle" onclick="toggleTheme()" title="Toggle theme"><i data-lucide="moon"></i></button>
+        <button class="btn-icon" onclick="goPage('settings')" title="Notifications"><i data-lucide="bell"></i></button>
+      </div>
+    </div>
+
+    <!-- ======================= PROFILE ======================= -->
+    <section class="page" id="page-profile">
+      <div class="page-head">
+        <div><div class="page-eyebrow">Overview</div><div class="page-title">Profile</div><div class="page-sub">Your account, at a glance.</div></div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-ghost" id="profileEditBtn" onclick="toggleProfileEdit()"><i data-lucide="pencil" style="width:15px;height:15px"></i> Edit profile</button>
+          <button class="btn btn-danger" onclick="logout()"><i data-lucide="log-out" style="width:15px;height:15px"></i> Logout</button>
+        </div>
+      </div>
+
+      <div class="card glass" style="padding:34px;">
+        <div class="profile-head">
+          <div class="profile-photo-wrap" onclick="document.getElementById('profilePhotoInput').click()">
+            <img id="profilePhotoImg" class="profile-photo" alt="Profile photo" style="display:none;">
+            <div id="profilePhotoFallback" class="profile-photo profile-photo-fallback">A</div>
+            <div class="profile-photo-edit"><i data-lucide="camera" style="width:14px;height:14px"></i></div>
+          </div>
+          <input type="file" id="profilePhotoInput" accept="image/*" style="display:none" onchange="handleProfilePhoto(event)">
+          <div style="flex:1; min-width:0;">
+            <div class="profile-name" id="profileNameDisplay">Alex</div>
+            <div class="profile-meta-row">
+              <span class="pill pill-low" id="profileAccountType">Member</span>
+              <span class="profile-meta-item"><i data-lucide="at-sign" style="width:13px;height:13px"></i><span id="profileUsernameDisplay">alex</span></span>
+              <span class="profile-meta-item"><i data-lucide="calendar" style="width:13px;height:13px"></i>Joined <span id="profileJoinDate">—</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-form-grid">
+          <div class="field"><label>Full name</label><input type="text" id="profileNameInput" disabled></div>
+          <div class="field"><label>Username</label><input type="text" id="profileUsernameInput" disabled></div>
+          <div class="field"><label>Email</label><input type="email" id="profileEmailInput" disabled></div>
+          <div class="field"><label>Mobile number</label><input type="text" id="profileMobileInput" disabled placeholder="+91 00000 00000"></div>
+        </div>
+        <div class="field"><label>Bio</label><textarea id="profileBioInput" disabled rows="3" placeholder="A short line about yourself…"></textarea></div>
+
+        <div class="profile-save-row" id="profileSaveRow" style="display:none;">
+          <button class="btn btn-ghost" onclick="cancelProfileEdit()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveProfileFull()">Save changes</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= DASHBOARD ======================= -->
+    <section class="page active" id="page-dashboard">
+
+      <div class="dash-grid">
+        <!-- Welcome Card (40%) -->
+        <div class="welcome-card glass card">
+          <div>
+            <div class="hero-greet" id="heroGreet">Good morning <span aria-hidden="true">👋</span></div>
+            <div class="hero-name" id="heroName">Alex</div>
+
+            <div class="date-block">
+              <div class="date-big" id="heroDayNum">04</div>
+              <div class="date-side">
+                <div class="date-weekday" id="heroWeekday">Saturday</div>
+                <div class="date-monthyear" id="heroMonthYear">July 2026</div>
+              </div>
+            </div>
+
+            <div class="welcome-quote" id="heroQuote">"Focus on being productive, not busy."</div>
+          </div>
+
+          <div class="welcome-foot">
+            <div class="wf-item">
+              <div class="wf-icon" style="background:rgba(111,157,36,0.15)"><i data-lucide="cloud-sun" style="width:17px;height:17px;color:var(--natural-green)"></i></div>
+              <div><div class="wf-value" id="heroTemp">24°C</div><div class="wf-label">Partly cloudy</div></div>
+            </div>
+            <div class="wf-item">
+              <div class="wf-icon" style="background:rgba(47,95,103,0.15)"><i data-lucide="clock" style="width:17px;height:17px;color:var(--deep-teal)"></i></div>
+              <div><div class="wf-value" id="heroClock">--:--</div><div class="wf-label">Local time</div></div>
+            </div>
+            <div class="wf-item">
+              <div class="wf-icon" style="background:rgba(245,185,66,0.18)"><i data-lucide="target" style="width:17px;height:17px;color:#8a6410"></i></div>
+              <div><div class="wf-value" id="heroFocus">All clear</div><div class="wf-label">Today's focus</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Card (60%) -->
+        <div class="progress-card glass card">
+          <div class="progress-top">
+            <div class="progress-ring-big">
+              <svg width="152" height="152" viewBox="0 0 152 152">
+                <circle cx="76" cy="76" r="66" fill="none" stroke="rgba(111,157,36,0.14)" stroke-width="12"/>
+                <circle id="dashRing" cx="76" cy="76" r="66" fill="none" stroke="url(#gradRing)" stroke-width="12" stroke-linecap="round" stroke-dasharray="414.7" stroke-dashoffset="414.7" transform="rotate(-90 76 76)"/>
+                <defs><linearGradient id="gradRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6F9D24"/><stop offset="100%" stop-color="#8FD65C"/></linearGradient></defs>
+              </svg>
+              <div class="ring-center">
+                <div class="ring-pct" id="dashRingPct">0%</div>
+                <div class="ring-caption">Today's Progress</div>
+              </div>
+            </div>
+            <div class="progress-headline">
+              <div class="ph-title" id="dashRingLabel">Let's get started</div>
+              <div class="ph-sub" id="dashStreak">🔥 0 day streak</div>
+              <div class="ph-sub" style="margin-top:10px;">Daily goal completion across every habit, task and target — all in one glance.</div>
+            </div>
+          </div>
+
+          <div class="progress-stats-grid">
+            <div class="pstat-row">
+              <div class="pstat-icon" style="background:rgba(111,157,36,0.15)"><i data-lucide="check-square" style="width:17px;height:17px;color:var(--natural-green)"></i></div>
+              <div class="pstat-body">
+                <div class="pstat-top-row"><span class="pstat-label">Completed tasks</span><span class="pstat-value" id="prTasksVal">0/0</span></div>
+                <div class="bar-track bar-track-sm"><div class="bar-fill" id="prTasksBar" style="width:0%"></div></div>
+              </div>
+            </div>
+            <div class="pstat-row">
+              <div class="pstat-icon" style="background:rgba(47,95,103,0.15)"><i data-lucide="book-open" style="width:17px;height:17px;color:var(--deep-teal)"></i></div>
+              <div class="pstat-body">
+                <div class="pstat-top-row"><span class="pstat-label">Study hours</span><span class="pstat-value" id="prStudyVal">0h / 0h</span></div>
+                <div class="bar-track bar-track-sm"><div class="bar-fill" id="prStudyBar" style="width:0%"></div></div>
+              </div>
+            </div>
+            <div class="pstat-row">
+              <div class="pstat-icon" style="background:rgba(143,214,92,0.18)"><i data-lucide="repeat" style="width:17px;height:17px;color:var(--natural-green)"></i></div>
+              <div class="pstat-body">
+                <div class="pstat-top-row"><span class="pstat-label">Habit completion</span><span class="pstat-value" id="prHabitVal">0%</span></div>
+                <div class="bar-track bar-track-sm"><div class="bar-fill" id="prHabitBar" style="width:0%"></div></div>
+              </div>
+            </div>
+            <div class="pstat-row">
+              <div class="pstat-icon" style="background:rgba(66,180,196,0.15)"><i data-lucide="droplets" style="width:17px;height:17px;color:#3AAAC0"></i></div>
+              <div class="pstat-body">
+                <div class="pstat-top-row"><span class="pstat-label">Water intake</span><span class="pstat-value" id="prWaterVal">0/8</span></div>
+                <div class="bar-track bar-track-sm"><div class="bar-fill" id="prWaterBar" style="width:0%"></div></div>
+              </div>
+            </div>
+            <div class="pstat-row">
+              <div class="pstat-icon" style="background:rgba(245,185,66,0.18)"><i data-lucide="flame" style="width:17px;height:17px;color:#8a6410"></i></div>
+              <div class="pstat-body">
+                <div class="pstat-top-row"><span class="pstat-label">Current streak</span><span class="pstat-value" id="prStreakVal">0 days</span></div>
+                <div class="bar-track bar-track-sm"><div class="bar-fill" id="prStreakBar" style="width:0%"></div></div>
+              </div>
+            </div>
+            <div class="pstat-row">
+              <div class="pstat-icon" style="background:rgba(232,91,91,0.13)"><i data-lucide="target" style="width:17px;height:17px;color:var(--danger)"></i></div>
+              <div class="pstat-body">
+                <div class="pstat-top-row"><span class="pstat-label">Daily goal</span><span class="pstat-value" id="prGoalVal">0%</span></div>
+                <div class="bar-track bar-track-sm"><div class="bar-fill" id="prGoalBar" style="width:0%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="widget-section-head">
+        <span class="widget-section-label">Your widgets</span>
+        <button class="btn btn-ghost btn-sm" id="customizeBtn" onclick="enterCustomizeMode()"><i data-lucide="layout-dashboard" style="width:14px;height:14px"></i> Customize</button>
+      </div>
+      <div class="widget-toolbar" id="widgetToolbar">
+        <span class="widget-toolbar-hint"><i data-lucide="move" style="width:14px;height:14px"></i> Drag the handle to reorder — tap the eye to hide a widget</span>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-ghost btn-sm" onclick="resetDashboardLayout()">Reset layout</button>
+          <button class="btn btn-primary btn-sm" onclick="exitCustomizeMode()">Done</button>
+        </div>
+      </div>
+
+      <div class="widget-grid" id="widgetGrid">
+        <div class="widget-card" data-widget="statTasks" data-span="1">
+          <div class="widget-drag-handle" draggable="true"><i data-lucide="grip-vertical"></i></div>
+          <button class="widget-hide-btn" onclick="toggleWidgetHidden('statTasks')"><i data-lucide="eye-off"></i></button>
+          <div class="card glass stat-card">
+            <div class="stat-top"><div class="stat-icon" style="background:rgba(111,157,36,0.15)"><i data-lucide="check-square" style="color:var(--natural-green)"></i></div><span class="stat-delta up" id="tasksDelta"></span></div>
+            <div class="stat-value" id="statTasks">0/0</div><div class="stat-label">Tasks today</div>
+          </div>
+        </div>
+        <div class="widget-card" data-widget="statStudy" data-span="1">
+          <div class="widget-drag-handle" draggable="true"><i data-lucide="grip-vertical"></i></div>
+          <button class="widget-hide-btn" onclick="toggleWidgetHidden('statStudy')"><i data-lucide="eye-off"></i></button>
+          <div class="card glass stat-card">
+            <div class="stat-top"><div class="stat-icon" style="background:rgba(47,95,103,0.15)"><i data-lucide="book-open" style="color:var(--deep-teal)"></i></div></div>
+            <div class="stat-value" id="statStudy">0h</div><div class="stat-label">Study hours</div>
+          </div>
+        </div>
+        <div class="widget-card" data-widget="statWater" data-span="1">
+          <div class="widget-drag-handle" draggable="true"><i data-lucide="grip-vertical"></i></div>
+          <button class="widget-hide-btn" onclick="toggleWidgetHidden('statWater')"><i data-lucide="eye-off"></i></button>
+          <div class="card glass stat-card">
+            <div class="stat-top"><div class="stat-icon" style="background:rgba(66,180,196,0.15)"><i data-lucide="droplets" style="color:#3AAAC0"></i></div></div>
+            <div class="stat-value" id="statWater">0</div><div class="stat-label">Water intake</div>
+          </div>
+        </div>
+        <div class="widget-card" data-widget="statMood" data-span="1">
+          <div class="widget-drag-handle" draggable="true"><i data-lucide="grip-vertical"></i></div>
+          <button class="widget-hide-btn" onclick="toggleWidgetHidden('statMood')"><i data-lucide="eye-off"></i></button>
+          <div class="card glass stat-card">
+            <div class="stat-top"><div class="stat-icon" style="background:rgba(245,185,66,0.18)"><i data-lucide="smile" style="color:#8a6410"></i></div></div>
+            <div class="stat-value" id="statMood">—</div><div class="stat-label">Mood</div>
+          </div>
+        </div>
+        <div class="widget-card" data-widget="statGoals" data-span="1">
+          <div class="widget-drag-handle" draggable="true"><i data-lucide="grip-vertical"></i></div>
+          <button class="widget-hide-btn" onclick="toggleWidgetHidden('statGoals')"><i data-lucide="eye-off"></i></button>
+          <div class="card glass stat-card">
+            <div class="stat-top"><div class="stat-icon" style="background:rgba(143,214,92,0.18)"><i data-lucide="target" style="color:var(--natural-green)"></i></div><span class="stat-delta" id="goalsDelta"></span></div>
+            <div class="stat-value" id="statGoals">0%</div><div class="stat-label">Goals</div>
+          </div>
+        </div>
+        <div class="widget-card" data-widget="statExpenses" data-span="1">
+          <div class="widget-drag-handle" draggable="true"><i data-lucide="grip-vertical"></i></div>
+          <button class="widget-hide-btn" onclick="toggleWidgetHidden('statExpenses')"><i data-lucide="eye-off"></i></button>
+          <div class="card glass stat-card">
+            <div class="stat-top"><div class="stat-icon" style="background:rgba(232,91,91,0.13)"><i data-lucide="wallet" style="color:var(--danger)"></i></div></div>
+            <div class="stat-value" id="statExpenses">₹0</div><div class="stat-label">Expenses today</div>
+          </div>
+        </div>
+        <div class="widget-card" data-widget="weekSummary" data-span="3">
+          <div class="widget-drag-handle" draggable="true"><i data-lucide="grip-vertical"></i></div>
+          <button class="widget-hide-btn" onclick="toggleWidgetHidden('weekSummary')"><i data-lucide="eye-off"></i></button>
+          <div class="card glass">
+            <h4 style="font-size:15px; margin-bottom:14px;">This week</h4>
+            <div id="weekSummaryBars"></div>
+          </div>
+        </div>
+        <div class="widget-card" data-widget="miniCal" data-span="3">
+          <div class="widget-drag-handle" draggable="true"><i data-lucide="grip-vertical"></i></div>
+          <button class="widget-hide-btn" onclick="toggleWidgetHidden('miniCal')"><i data-lucide="eye-off"></i></button>
+          <div class="card glass">
+            <h4 style="font-size:15px; margin-bottom:14px;">Mini calendar</h4>
+            <div class="mini-cal" id="miniCal"></div>
+          </div>
+        </div>
+        <div class="widget-card" data-widget="activity" data-span="3">
+          <div class="widget-drag-handle" draggable="true"><i data-lucide="grip-vertical"></i></div>
+          <button class="widget-hide-btn" onclick="toggleWidgetHidden('activity')"><i data-lucide="eye-off"></i></button>
+          <div class="card glass">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <h4 style="font-size:15px;">Recent activity</h4>
+            </div>
+            <div id="activityFeed"></div>
+          </div>
+        </div>
+        <div class="widget-card" data-widget="quickActions" data-span="3">
+          <div class="widget-drag-handle" draggable="true"><i data-lucide="grip-vertical"></i></div>
+          <button class="widget-hide-btn" onclick="toggleWidgetHidden('quickActions')"><i data-lucide="eye-off"></i></button>
+          <div class="card glass">
+            <h4 style="font-size:15px; margin-bottom:14px;">Quick actions</h4>
+            <div class="grid grid-2" style="gap:12px;">
+              <button class="btn btn-ghost" onclick="openTaskModal()"><i data-lucide="plus" style="width:15px;height:15px"></i> New task</button>
+              <button class="btn btn-ghost" onclick="goPage('journal')"><i data-lucide="pen-line" style="width:15px;height:15px"></i> Journal entry</button>
+              <button class="btn btn-ghost" onclick="goPage('study')"><i data-lucide="timer" style="width:15px;height:15px"></i> Start focus</button>
+              <button class="btn btn-ghost" onclick="openExpenseModal()"><i data-lucide="receipt" style="width:15px;height:15px"></i> Log expense</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= TASKS ======================= -->
+    <section class="page" id="page-tasks">
+      <div class="page-head">
+        <div><div class="page-eyebrow">Plan</div><div class="page-title">Task Manager</div><div class="page-sub">Everything you need to get done, organized beautifully.</div></div>
+        <button class="btn btn-primary" onclick="openTaskModal()"><i data-lucide="plus" style="width:16px;height:16px"></i> Add task</button>
+      </div>
+      <div class="section-toolbar">
+        <div class="searchbox"><i data-lucide="search"></i><input type="text" id="taskSearch" placeholder="Search tasks…" oninput="renderTasks()"></div>
+        <div class="chip-filter" id="taskFilterChips">
+          <button class="chip active" data-f="all" onclick="setTaskFilter('all')">All</button>
+          <button class="chip" data-f="pending" onclick="setTaskFilter('pending')">Pending</button>
+          <button class="chip" data-f="completed" onclick="setTaskFilter('completed')">Completed</button>
+          <button class="chip" data-f="pinned" onclick="setTaskFilter('pinned')">Pinned</button>
+          <button class="chip" data-f="archived" onclick="setTaskFilter('archived')">Archived</button>
+        </div>
+        <select id="taskSort" onchange="renderTasks()" style="max-width:170px; margin-left:auto;">
+          <option value="due">Sort: Due date</option>
+          <option value="priority">Sort: Priority</option>
+          <option value="created">Sort: Newest</option>
+        </select>
+      </div>
+      <div class="card glass" id="taskListWrap"></div>
+    </section>
+
+    <!-- ======================= PLANNER ======================= -->
+    <section class="page" id="page-planner">
+      <div class="page-head">
+        <div><div class="page-eyebrow">Plan</div><div class="page-title">Daily Planner</div><div class="page-sub">Your day, mapped hour by hour.</div></div>
+        <button class="btn btn-primary" onclick="openEventModal()"><i data-lucide="plus" style="width:16px;height:16px"></i> Add event</button>
+      </div>
+      <div class="chip-filter" style="margin-bottom:16px;">
+        <button class="chip active" onclick="setPlannerView('day',this)">Day</button>
+        <button class="chip" onclick="setPlannerView('week',this)">Week</button>
+      </div>
+      <div class="card glass" style="padding:14px 20px;">
+        <div class="timeline" id="timelineWrap"></div>
+      </div>
+    </section>
+
+    <!-- ======================= STUDY TRACKER ======================= -->
+    <section class="page" id="page-study">
+      <div class="page-head">
+        <div><div class="page-eyebrow">Grow</div><div class="page-title">Study Tracker</div><div class="page-sub">Focus sessions, subjects, and steady progress.</div></div>
+        <button class="btn btn-primary" onclick="openSubjectModal()"><i data-lucide="plus" style="width:16px;height:16px"></i> Add subject</button>
+      </div>
+      <div class="grid grid-2">
+        <div class="card glass">
+          <h4 style="font-size:15px;margin-bottom:6px;">Focus timer</h4>
+          <div class="pomo-modes">
+            <button class="chip active" onclick="setPomoMode(25,5,this)">25 / 5</button>
+            <button class="chip" onclick="setPomoMode(50,10,this)">50 / 10</button>
+            <button class="chip" onclick="openCustomPomo()">Custom</button>
+          </div>
+          <div class="pomo-wrap">
+            <div class="pomo-ring">
+              <svg width="220" height="220" viewBox="0 0 220 220">
+                <circle cx="110" cy="110" r="98" fill="none" stroke="rgba(111,157,36,0.12)" stroke-width="14"/>
+                <circle id="pomoRing" cx="110" cy="110" r="98" fill="none" stroke="url(#gradRing2)" stroke-width="14" stroke-linecap="round" stroke-dasharray="616" stroke-dashoffset="0" transform="rotate(-90 110 110)"/>
+                <defs><linearGradient id="gradRing2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2F5F67"/><stop offset="100%" stop-color="#8FD65C"/></linearGradient></defs>
+              </svg>
+              <div class="pomo-time"><div class="t" id="pomoTime">25:00</div><div class="s" id="pomoState">Focus</div></div>
+            </div>
+            <div class="pomo-controls">
+              <button class="btn btn-primary" id="pomoStartBtn" onclick="pomoToggle()">Start</button>
+              <button class="btn btn-ghost" onclick="pomoReset()">Reset</button>
+            </div>
+          </div>
+        </div>
+        <div class="card glass">
+          <h4 style="font-size:15px;margin-bottom:14px;">Today's target</h4>
+          <div class="field"><label>Daily target (hours)</label><input type="number" id="studyDailyTarget" min="0" step="0.5" onchange="saveStudyTargets()"></div>
+          <div class="field"><label>Weekly goal (hours)</label><input type="number" id="studyWeeklyTarget" min="0" step="0.5" onchange="saveStudyTargets()"></div>
+          <div class="bar-track" style="margin-top:6px;"><div class="bar-fill" id="studyTargetBar" style="width:0%"></div></div>
+          <div class="stat-label" id="studyTargetLabel" style="margin-top:8px;">0h / 0h today</div>
+          <div style="margin-top:18px;"><canvas id="studyChart" height="130"></canvas></div>
+        </div>
+      </div>
+      <div class="card glass" style="margin-top:20px;">
+        <h4 style="font-size:15px;margin-bottom:14px;">Subjects</h4>
+        <div id="subjectListWrap"></div>
+      </div>
+    </section>
+
+    <!-- ======================= GOALS ======================= -->
+    <section class="page" id="page-goals">
+      <div class="page-head">
+        <div><div class="page-eyebrow">Plan</div><div class="page-title">Goals</div><div class="page-sub">From daily wins to yearly visions.</div></div>
+        <button class="btn btn-primary" onclick="openGoalModal()"><i data-lucide="plus" style="width:16px;height:16px"></i> Add goal</button>
+      </div>
+      <div class="chip-filter" id="goalFilterChips" style="margin-bottom:16px;">
+        <button class="chip active" data-g="daily" onclick="setGoalFilter('daily')">Daily</button>
+        <button class="chip" data-g="weekly" onclick="setGoalFilter('weekly')">Weekly</button>
+        <button class="chip" data-g="monthly" onclick="setGoalFilter('monthly')">Monthly</button>
+        <button class="chip" data-g="yearly" onclick="setGoalFilter('yearly')">Yearly</button>
+      </div>
+      <div class="grid grid-3" id="goalsWrap"></div>
+    </section>
+
+    <!-- ======================= EXPENSE TRACKER ======================= -->
+    <section class="page" id="page-expenses">
+      <div class="page-head">
+        <div><div class="page-eyebrow">Money</div><div class="page-title">Expense Tracker</div><div class="page-sub">Know where every rupee goes.</div></div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-ghost" onclick="exportExpensesCSV()"><i data-lucide="download" style="width:15px;height:15px"></i> Export</button>
+          <button class="btn btn-primary" onclick="openExpenseModal()"><i data-lucide="plus" style="width:16px;height:16px"></i> Add transaction</button>
+        </div>
+      </div>
+      <div class="grid grid-4" style="margin-bottom:20px;">
+        <div class="card glass stat-card"><div class="stat-label">Income</div><div class="stat-value" id="expIncome" style="color:var(--success)">₹0</div></div>
+        <div class="card glass stat-card"><div class="stat-label">Expense</div><div class="stat-value" id="expExpense" style="color:var(--danger)">₹0</div></div>
+        <div class="card glass stat-card"><div class="stat-label">Savings</div><div class="stat-value" id="expSavings">₹0</div></div>
+        <div class="card glass stat-card"><div class="stat-label">Balance</div><div class="stat-value" id="expBalance">₹0</div></div>
+      </div>
+      <div class="grid grid-2" style="margin-bottom:20px;">
+        <div class="card glass"><h4 style="font-size:15px;margin-bottom:14px;">By category</h4><canvas id="expensePie" height="220"></canvas></div>
+        <div class="card glass"><h4 style="font-size:15px;margin-bottom:14px;">Monthly trend</h4><canvas id="expenseLine" height="220"></canvas></div>
+      </div>
+      <div class="card glass">
+        <div class="section-toolbar"><h4 style="font-size:15px;">Transaction history</h4>
+          <input type="text" id="expSearch" placeholder="Search transactions…" style="max-width:220px; margin-left:auto;" oninput="renderExpenses()">
+        </div>
+        <div id="expenseListWrap"></div>
+      </div>
+    </section>
+
+    <!-- ======================= HABIT TRACKER ======================= -->
+    <section class="page" id="page-habits">
+      <div class="page-head">
+        <div><div class="page-eyebrow">Grow</div><div class="page-title">Habit Tracker</div><div class="page-sub">Consistency compounds. Check in daily.</div></div>
+        <button class="btn btn-primary" onclick="openHabitModal()"><i data-lucide="plus" style="width:16px;height:16px"></i> Add habit</button>
+      </div>
+      <div class="card glass" id="habitListWrap"></div>
+      <div class="card glass" style="margin-top:20px;">
+        <h4 style="font-size:15px;margin-bottom:14px;">30-day heatmap</h4>
+        <div class="heatmap" id="habitHeatmap"></div>
+      </div>
+    </section>
+
+    <!-- ======================= HEALTH TRACKER ======================= -->
+    <section class="page" id="page-health">
+      <div class="page-head">
+        <div><div class="page-eyebrow">Grow</div><div class="page-title">Health Tracker</div><div class="page-sub">Sleep, hydration, movement — in balance.</div></div>
+      </div>
+      <div class="grid grid-4" style="margin-bottom:20px;">
+        <div class="card glass"><label>Sleep hours</label><input type="number" id="hSleep" step="0.5" onchange="saveHealth()"></div>
+        <div class="card glass"><label>Water (glasses)</label><input type="number" id="hWater" onchange="saveHealth()"></div>
+        <div class="card glass"><label>Weight (kg)</label><input type="number" id="hWeight" step="0.1" onchange="saveHealth()"></div>
+        <div class="card glass"><label>Height (cm)</label><input type="number" id="hHeight" step="0.1" onchange="saveHealth()"></div>
+      </div>
+      <div class="grid grid-4" style="margin-bottom:20px;">
+        <div class="card glass"><label>Daily steps</label><input type="number" id="hSteps" onchange="saveHealth()"></div>
+        <div class="card glass"><label>Calories</label><input type="number" id="hCalories" onchange="saveHealth()"></div>
+        <div class="card glass"><label>Exercise (min)</label><input type="number" id="hExercise" onchange="saveHealth()"></div>
+        <div class="card glass stat-card"><div class="stat-label">BMI</div><div class="stat-value" id="hBMI">—</div><div class="stat-label" id="hBMICat">—</div></div>
+      </div>
+      <div class="card glass"><h4 style="font-size:15px;margin-bottom:14px;">Weekly overview</h4><canvas id="healthChart" height="120"></canvas></div>
+    </section>
+
+    <!-- ======================= JOURNAL ======================= -->
+    <section class="page" id="page-journal">
+      <div class="page-head">
+        <div><div class="page-eyebrow">Grow</div><div class="page-title">Journal</div><div class="page-sub">Diary, gratitude, and reflection in one calm place.</div></div>
+        <button class="btn btn-primary" onclick="openJournalModal()"><i data-lucide="plus" style="width:16px;height:16px"></i> New entry</button>
+      </div>
+      <div class="section-toolbar">
+        <div class="searchbox"><i data-lucide="search"></i><input type="text" id="journalSearch" placeholder="Search entries or tags…" oninput="renderJournal()"></div>
+      </div>
+      <div id="journalWrap"></div>
+    </section>
+
+    <!-- ======================= ACHIEVEMENTS ======================= -->
+    <section class="page" id="page-achievements">
+      <div class="page-head">
+        <div><div class="page-eyebrow">Grow</div><div class="page-title">Achievements</div><div class="page-sub">Milestones you've unlocked along the way.</div></div>
+      </div>
+      <div class="card glass" style="padding:26px 30px; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span style="font-weight:700; font-size:14px;">Overall progress</span>
+          <span class="stat-label" id="achProgressLabel">0 / 8 unlocked</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="achProgressBar" style="width:0%"></div></div>
+      </div>
+      <div class="grid grid-4" id="achievementsWrap"></div>
+    </section>
+
+    <!-- ======================= ANALYTICS ======================= -->
+    <section class="page" id="page-analytics">
+      <div class="page-head">
+        <div><div class="page-eyebrow">Overview</div><div class="page-title">Analytics</div><div class="page-sub">A bird's-eye view of your productivity.</div></div>
+      </div>
+      <div class="grid grid-2" style="margin-bottom:20px;">
+        <div class="card glass"><h4 style="font-size:15px;margin-bottom:14px;">Productivity (tasks completed / day)</h4><canvas id="anaProductivity" height="180"></canvas></div>
+        <div class="card glass"><h4 style="font-size:15px;margin-bottom:14px;">Study hours (7 days)</h4><canvas id="anaStudy" height="180"></canvas></div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card glass"><h4 style="font-size:15px;margin-bottom:14px;">Habit completion</h4><canvas id="anaHabits" height="180"></canvas></div>
+        <div class="card glass"><h4 style="font-size:15px;margin-bottom:14px;">Expense split</h4><canvas id="anaExpense" height="180"></canvas></div>
+      </div>
+    </section>
+
+    <!-- ======================= SETTINGS ======================= -->
+    <section class="page" id="page-settings">
+      <div class="page-head">
+        <div><div class="page-eyebrow">System</div><div class="page-title">Settings</div><div class="page-sub">Make Atlas yours.</div></div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card glass">
+          <h4 style="font-size:15px;margin-bottom:6px;">Security</h4>
+          <div class="setting-row">
+            <div><div class="setting-title">App PIN lock</div><div class="setting-sub">Require a PIN to open Atlas</div></div>
+            <div class="switch" id="pinEnableSwitch" onclick="togglePinLock()"></div>
+          </div>
+          <div id="pinManageRows">
+            <div class="setting-row"><div><div class="setting-title">Change PIN</div><div class="setting-sub">Update your unlock code</div></div><button class="btn btn-ghost btn-sm" onclick="openChangePinModal()">Change</button></div>
+            <div class="setting-row"><div><div class="setting-title">Lock on startup</div><div class="setting-sub">Always ask for PIN when Atlas opens</div></div><div class="switch" id="lockOnStartupSwitch" onclick="toggleLockOnStartup()"></div></div>
+            <div class="setting-row"><div><div class="setting-title">Auto-lock after</div><div class="setting-sub">Lock automatically when inactive</div></div>
+              <select id="autoLockSel" style="max-width:130px" onchange="setAutoLockMinutes(this.value)">
+                <option value="1">1 minute</option><option value="2">2 minutes</option><option value="5">5 minutes</option><option value="10">10 minutes</option><option value="30">30 minutes</option>
+              </select>
+            </div>
+            <div class="setting-row"><div><div class="setting-title">Session timeout</div><div class="setting-sub">Sign out if locked &amp; idle this long</div></div>
+              <select id="sessionTimeoutSel" style="max-width:130px" onchange="setSessionTimeoutMinutes(this.value)">
+                <option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">1 hour</option><option value="120">2 hours</option>
+              </select>
+            </div>
+          </div>
+          <div class="setting-row"><div><div class="setting-title">Your profile</div><div class="setting-sub">Photo, name, bio and contact info</div></div><button class="btn btn-ghost btn-sm" onclick="goPage('profile')">Open</button></div>
+        </div>
+        <div class="card glass">
+          <h4 style="font-size:15px;margin-bottom:6px;">Appearance</h4>
+          <div class="setting-row"><div><div class="setting-title">Dark mode</div><div class="setting-sub">Easier on the eyes at night</div></div><div class="switch" id="darkSwitch" onclick="toggleTheme()"></div></div>
+          <div class="setting-row"><div><div class="setting-title">Animations</div><div class="setting-sub">Motion & transitions</div></div><div class="switch on" id="animSwitch" onclick="toggleAnim()"></div></div>
+          <div class="setting-row"><div><div class="setting-title">Accent color</div><div class="setting-sub">Pick your signature tone</div></div>
+            <div class="color-swatches" id="accentSwatches"></div>
+          </div>
+          <div class="setting-row"><div><div class="setting-title">Font size</div><div class="setting-sub">Comfort at any distance</div></div>
+            <select id="fontSizeSel" style="max-width:120px" onchange="setFontSize(this.value)"><option value="15">Small</option><option value="16" selected>Default</option><option value="18">Large</option></select>
+          </div>
+        </div>
+        <div class="card glass">
+          <h4 style="font-size:15px;margin-bottom:6px;">Notifications</h4>
+          <div class="setting-row"><div><div class="setting-title">Task reminders</div><div class="setting-sub">Get nudged before due time</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="setting-row"><div><div class="setting-title">Habit check-in</div><div class="setting-sub">Evening reminder to log habits</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+        </div>
+        <div class="card glass">
+          <h4 style="font-size:15px;margin-bottom:6px;">Data</h4>
+          <div class="setting-row"><div><div class="setting-title">Backup / Export</div><div class="setting-sub">Save all your data as JSON</div></div><button class="btn btn-ghost btn-sm" onclick="exportJSON()">Export</button></div>
+          <div class="setting-row"><div><div class="setting-title">Restore / Import</div><div class="setting-sub">Load a previous backup</div></div><label class="btn btn-ghost btn-sm" style="cursor:pointer;">Import<input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label></div>
+          <div class="setting-row"><div><div class="setting-title">Reset all data</div><div class="setting-sub">This cannot be undone</div></div><button class="btn btn-danger btn-sm" onclick="resetAllData()">Reset</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= ADMIN PANEL ======================= -->
+    <section class="page" id="page-admin">
+      <div class="page-head">
+        <div><div class="page-eyebrow">System</div><div class="page-title">Admin Panel</div><div class="page-sub">Application-wide oversight.</div></div>
+      </div>
+      <div class="grid grid-4" style="margin-bottom:20px;">
+        <div class="card glass stat-card"><div class="stat-label">Total users</div><div class="stat-value" id="adminUsers">1</div></div>
+        <div class="card glass stat-card"><div class="stat-label">Storage used</div><div class="stat-value" id="adminStorage">0 KB</div></div>
+        <div class="card glass stat-card"><div class="stat-label">Total tasks</div><div class="stat-value" id="adminTasks">0</div></div>
+        <div class="card glass stat-card"><div class="stat-label">App version</div><div class="stat-value">1.0.0</div></div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card glass">
+          <h4 style="font-size:15px;margin-bottom:14px;">User management</h4>
+          <div id="adminUserList"></div>
+        </div>
+        <div class="card glass">
+          <h4 style="font-size:15px;margin-bottom:14px;">Activity log</h4>
+          <div id="adminActivityLog" style="max-height:320px; overflow:auto;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= ABOUT ATLAS / ABOUT DEVELOPER ======================= -->
+    <section class="page" id="page-about">
+
+      <div class="about-hero glass card">
+        <div class="logo-badge logo-badge-lg glass"><img class="atlas-logo-img" alt="Atlas logo" loading="lazy"></div>
+        <div class="about-hero-eyebrow">The Atlas Project</div>
+        <h1>Atlas</h1>
+        <p class="about-tagline">A modern productivity and self-management platform, designed to simplify everyday life through thoughtful design and practical tools — helping you build discipline, stay consistent, and make continuous progress.</p>
+        <div class="about-hero-actions">
+          <button class="btn btn-primary" onclick="goPage('dashboard')"><i data-lucide="layout-grid" style="width:16px;height:16px"></i> Explore Dashboard</button>
+          <a href="#devSection" class="btn btn-ghost" onclick="document.getElementById('devSection').scrollIntoView({behavior:'smooth'})"><i data-lucide="user" style="width:16px;height:16px"></i> Meet the Developer</a>
+        </div>
+      </div>
+
+      <!-- About Atlas overview -->
+      <div class="about-section card glass" style="padding:36px;">
+        <div class="about-section-eyebrow">About Atlas</div>
+        <div class="about-section-title">Productivity that feels effortless.</div>
+        <p class="about-section-sub">The goal of Atlas is not just to help users complete tasks, but to help them build discipline, stay consistent, and make continuous progress toward their personal and professional goals. Atlas combines simplicity with functionality, offering a clean and distraction-free experience where productivity feels natural rather than overwhelming.</p>
+        <p class="about-section-sub" style="margin-top:12px;">Every feature has been carefully designed with performance, usability, and minimalism in mind to ensure a premium user experience across all devices.</p>
+      </div>
+
+      <div class="grid grid-2" style="margin-top:22px;">
+        <div class="card glass" style="padding:30px;">
+          <div class="about-section-eyebrow">Our Vision</div>
+          <div class="about-section-title" style="font-size:20px;">A more disciplined world.</div>
+          <p class="about-section-sub">To build a digital ecosystem where technology empowers people to become more organized, disciplined, productive, and successful in every aspect of life.</p>
+        </div>
+        <div class="card glass" style="padding:30px;">
+          <div class="about-section-eyebrow">Our Mission</div>
+          <div class="about-section-title" style="font-size:20px;">What drives us daily.</div>
+          <div class="value-chip-grid">
+            <span class="value-chip"><i data-lucide="check-circle"></i>Build useful digital products</span>
+            <span class="value-chip"><i data-lucide="check-circle"></i>Beautiful, intuitive experiences</span>
+            <span class="value-chip"><i data-lucide="check-circle"></i>Promote discipline &amp; consistency</span>
+            <span class="value-chip"><i data-lucide="check-circle"></i>Solve real problems with tech</span>
+            <span class="value-chip"><i data-lucide="check-circle"></i>Improve with every update</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-section card glass" style="padding:32px;">
+        <div class="about-section-eyebrow">Core Values</div>
+        <div class="value-chip-grid" style="margin-top:12px;">
+          <span class="value-chip"><i data-lucide="feather"></i>Simplicity</span>
+          <span class="value-chip"><i data-lucide="lightbulb"></i>Innovation</span>
+          <span class="value-chip"><i data-lucide="gem"></i>Quality</span>
+          <span class="value-chip"><i data-lucide="shield-check"></i>Privacy</span>
+          <span class="value-chip"><i data-lucide="check-circle"></i>Reliability</span>
+          <span class="value-chip"><i data-lucide="repeat"></i>Consistency</span>
+          <span class="value-chip"><i data-lucide="graduation-cap"></i>Continuous Learning</span>
+        </div>
+      </div>
+
+      <div class="about-section card glass" style="padding:32px;">
+        <div class="about-section-eyebrow">Why Atlas?</div>
+        <p class="about-section-sub">Atlas is designed for students, professionals, entrepreneurs, and anyone who wants to organize life more efficiently. Unlike traditional productivity applications, Atlas focuses on creating a clean, premium, and distraction-free environment that encourages users to stay consistent every day.</p>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-eyebrow">Features</div>
+        <div class="about-section-title">Everything you need, nothing you don't.</div>
+        <div class="grid grid-4" style="margin-top:16px;">
+          <div class="card glass feature-card"><div class="f-icon"><i data-lucide="layout-grid"></i></div><div class="f-title">Productivity Dashboard</div><div class="f-desc">A calm home for your entire day.</div></div>
+          <div class="card glass feature-card"><div class="f-icon"><i data-lucide="check-square"></i></div><div class="f-title">Task Management</div><div class="f-desc">Plan, prioritize, and complete with ease.</div></div>
+          <div class="card glass feature-card"><div class="f-icon"><i data-lucide="target"></i></div><div class="f-title">Goal Tracking</div><div class="f-desc">From daily wins to yearly visions.</div></div>
+          <div class="card glass feature-card"><div class="f-icon"><i data-lucide="repeat"></i></div><div class="f-title">Habit Tracking</div><div class="f-desc">Build streaks that compound over time.</div></div>
+          <div class="card glass feature-card"><div class="f-icon"><i data-lucide="bar-chart-3"></i></div><div class="f-title">Progress Analytics</div><div class="f-desc">A clear, honest view of your growth.</div></div>
+          <div class="card glass feature-card"><div class="f-icon"><i data-lucide="notebook-pen"></i></div><div class="f-title">Notes &amp; Journal</div><div class="f-desc">Capture thoughts, gratitude, and ideas.</div></div>
+          <div class="card glass feature-card"><div class="f-icon"><i data-lucide="calendar-days"></i></div><div class="f-title">Calendar</div><div class="f-desc">Your day, mapped hour by hour.</div></div>
+          <div class="card glass feature-card"><div class="f-icon"><i data-lucide="compass"></i></div><div class="f-title">Self Management Tools</div><div class="f-desc">Health, study, and finances in sync.</div></div>
+          <div class="card glass feature-card"><div class="f-icon"><i data-lucide="sparkles"></i></div><div class="f-title">Glassmorphism Interface</div><div class="f-desc">A premium, distraction-free canvas.</div></div>
+          <div class="card glass feature-card"><div class="f-icon"><i data-lucide="database"></i></div><div class="f-title">Local Storage Support</div><div class="f-desc">Your data, kept close and private.</div></div>
+          <div class="card glass feature-card"><div class="f-icon"><i data-lucide="wifi-off"></i></div><div class="f-title">Offline Support</div><div class="f-desc">Stay productive without a connection.</div></div>
+          <div class="card glass feature-card"><div class="f-icon"><i data-lucide="zap"></i></div><div class="f-title">Fast &amp; Mobile-first</div><div class="f-desc">Fluid performance on every device.</div></div>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-eyebrow">Future Roadmap</div>
+        <div class="about-section-title">What's next for Atlas.</div>
+        <div class="roadmap-grid" style="margin-top:16px;">
+          <div class="roadmap-chip glass card"><div class="r-icon"><i data-lucide="cloud"></i></div><span class="r-label">Cloud Sync</span><span class="r-tag">Soon</span></div>
+          <div class="roadmap-chip glass card"><div class="r-icon"><i data-lucide="brain-circuit"></i></div><span class="r-label">AI Assistant</span><span class="r-tag">Soon</span></div>
+          <div class="roadmap-chip glass card"><div class="r-icon"><i data-lucide="bell-ring"></i></div><span class="r-label">Smart Reminders</span><span class="r-tag">Soon</span></div>
+          <div class="roadmap-chip glass card"><div class="r-icon"><i data-lucide="users"></i></div><span class="r-label">Team Collaboration</span><span class="r-tag">Planned</span></div>
+          <div class="roadmap-chip glass card"><div class="r-icon"><i data-lucide="trending-up"></i></div><span class="r-label">Advanced Analytics</span><span class="r-tag">Planned</span></div>
+          <div class="roadmap-chip glass card"><div class="r-icon"><i data-lucide="monitor-smartphone"></i></div><span class="r-label">Cross Platform</span><span class="r-tag">Planned</span></div>
+          <div class="roadmap-chip glass card"><div class="r-icon"><i data-lucide="layout-panel-left"></i></div><span class="r-label">Widgets</span><span class="r-tag">Planned</span></div>
+          <div class="roadmap-chip glass card"><div class="r-icon"><i data-lucide="moon"></i></div><span class="r-label">Dark Mode+</span><span class="r-tag">Planned</span></div>
+          <div class="roadmap-chip glass card"><div class="r-icon"><i data-lucide="sliders"></i></div><span class="r-label">Personalization</span><span class="r-tag">Planned</span></div>
+        </div>
+      </div>
+
+      <hr class="about-divider" id="devSection">
+
+      <!-- About the Developer -->
+      <div class="about-section card glass" style="padding:36px;">
+        <div class="dev-profile-head">
+          <div class="dev-avatar">RT</div>
+          <div>
+            <div class="dev-name">Rudra Kumar Thakur</div>
+            <div class="dev-role">Founder, Designer &amp; Developer of Atlas</div>
+          </div>
+        </div>
+        <div class="dev-bio">
+          <p>I am Rudra Kumar Thakur, a Class 12 Science student under the Bihar School Examination Board (BSEB), passionate about technology, software development, UI/UX design, and solving real-world problems through digital products.</p>
+          <p>Atlas represents my journey as a student developer. Every screen, feature, and interaction reflects countless hours of learning, experimenting, improving, and building.</p>
+          <p>I strongly believe that age never defines capability. What truly matters is curiosity, consistency, discipline, and the willingness to learn every single day. Although I am still a student, I enjoy turning ideas into working products while continuously expanding my knowledge through practical projects.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-2" style="margin-top:22px;">
+        <div class="card glass" style="padding:30px;">
+          <div class="about-section-eyebrow">Skills</div>
+          <div class="chip-cloud" style="margin-top:12px;">
+            <span class="tag-chip">HTML</span><span class="tag-chip">CSS</span><span class="tag-chip">JavaScript</span><span class="tag-chip">Python</span><span class="tag-chip">Kotlin</span><span class="tag-chip">TypeScript</span><span class="tag-chip">C++ (Learning)</span><span class="tag-chip">UI/UX Design</span><span class="tag-chip">Responsive Web Dev</span><span class="tag-chip">AI Tools</span><span class="tag-chip">Prompt Engineering</span><span class="tag-chip">Video Editing</span><span class="tag-chip">Photography</span><span class="tag-chip">Videography</span><span class="tag-chip">Communication</span>
+          </div>
+        </div>
+        <div class="card glass" style="padding:30px;">
+          <div class="about-section-eyebrow">Interests</div>
+          <div class="chip-cloud" style="margin-top:12px;">
+            <span class="tag-chip">Software Development</span><span class="tag-chip">Artificial Intelligence</span><span class="tag-chip">UI/UX Design</span><span class="tag-chip">Productivity Systems</span><span class="tag-chip">Entrepreneurship</span><span class="tag-chip">Personal Growth</span><span class="tag-chip">Technology</span><span class="tag-chip">Content Creation</span>
+          </div>
+          <div class="about-section-eyebrow" style="margin-top:20px;">Hobbies</div>
+          <div class="chip-cloud" style="margin-top:12px;">
+            <span class="tag-chip">Solo Traveling</span><span class="tag-chip">Writing Shayari</span><span class="tag-chip">Dancing</span><span class="tag-chip">Cooking</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-2" style="margin-top:22px;">
+        <div class="card glass" style="padding:30px;">
+          <div class="about-section-eyebrow">Mission</div>
+          <p class="about-section-sub">To build digital products that make everyday life simpler while continuously improving my skills as a developer, designer, and lifelong learner.</p>
+        </div>
+        <div class="card glass" style="padding:30px;">
+          <div class="about-section-eyebrow">Dream</div>
+          <p class="about-section-sub">To pull my bloodline out of the hell of poverty through knowledge, technology, hard work, and innovation.</p>
+        </div>
+      </div>
+
+      <div class="quote-card glass card" style="margin-top:22px;">
+        <div class="qc-body">
+          Discipline creates consistency. Consistency creates progress. Progress creates success.<br>
+          Talent may open the first door, but persistence is what keeps it open.
+        </div>
+        <div class="qc-attr">— Philosophy</div>
+      </div>
+
+      <div class="quote-card glass card" style="margin-top:18px;">
+        <div class="qc-body">"I wish I were the monster you think I am."</div>
+        <div class="qc-attr">— Favorite quote</div>
+      </div>
+
+      <div class="about-section card glass" style="padding:30px;">
+        <div class="about-section-eyebrow">Developer Note</div>
+        <p class="about-section-sub">Every project I create is another opportunity to learn something new. Atlas is not just software — it is a reflection of my mindset, discipline, curiosity, and belief that technology can genuinely improve people's lives.</p>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-eyebrow">Connect</div>
+        <div class="connect-grid" style="margin-top:14px;">
+          <div class="connect-card glass card"><div class="c-icon"><i data-lucide="code-2"></i></div><div><div class="c-label">Developer</div><div class="c-sub">Full-stack builder</div></div></div>
+          <div class="connect-card glass card"><div class="c-icon"><i data-lucide="palette"></i></div><div><div class="c-label">Designer</div><div class="c-sub">Visual craftsmanship</div></div></div>
+          <div class="connect-card glass card"><div class="c-icon"><i data-lucide="layout-template"></i></div><div><div class="c-label">UI/UX Designer</div><div class="c-sub">Experience-first thinking</div></div></div>
+          <div class="connect-card glass card"><div class="c-icon"><i data-lucide="monitor"></i></div><div><div class="c-label">Frontend Developer</div><div class="c-sub">Pixel-perfect interfaces</div></div></div>
+          <div class="connect-card glass card"><div class="c-icon"><i data-lucide="graduation-cap"></i></div><div><div class="c-label">Student</div><div class="c-sub">Class 12, Science (BSEB)</div></div></div>
+          <div class="connect-card glass card"><div class="c-icon"><i data-lucide="rocket"></i></div><div><div class="c-label">Founder of Atlas</div><div class="c-sub">Building the vision</div></div></div>
+        </div>
+      </div>
+
+      <div class="about-footer">
+        <div class="logo-badge logo-badge-sm glass"><img class="atlas-logo-img" alt="Atlas logo" loading="lazy"></div>
+        <div class="about-footer-name">Designed, Developed &amp; Maintained by Rudra Kumar Thakur</div>
+        <div class="about-footer-role">Founder of Atlas</div>
+        <div class="about-footer-note">Made with dedication, curiosity, and countless hours of learning.</div>
+        <div class="about-footer-copy">© Atlas. All Rights Reserved.</div>
+        <div class="about-footer-quote">"Every great product begins as an idea that someone refuses to abandon."</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toastHost"></div>
+
+<div id="installBanner" class="glass" style="display:none; position:fixed; left:20px; right:20px; bottom:20px; max-width:460px; margin:0 auto; z-index:250; padding:18px 20px; border-radius:22px; align-items:center; gap:14px;">
+  <div style="display:flex; align-items:center; gap:14px;">
+    <div class="logo-badge logo-badge-sm" style="animation:none; flex-shrink:0;"><img class="atlas-logo-img" alt="Atlas logo" loading="lazy"></div>
+    <div style="flex:1; min-width:0;">
+      <div style="font-weight:800; font-size:14px;">Install Atlas</div>
+      <div style="font-size:12px; color:var(--text-2);">Add it to your home screen for the full app experience.</div>
+    </div>
+    <button class="btn-icon" style="width:30px;height:30px;flex-shrink:0;" onclick="dismissInstallBanner()"><i data-lucide="x" style="width:14px;height:14px"></i></button>
+  </div>
+  <button class="btn btn-primary" style="width:100%; margin-top:14px;" onclick="triggerInstall()"><i data-lucide="download" style="width:15px;height:15px"></i> Install Atlas</button>
+</div>
+
+<script src="js/constants.js" defer></script>
+<script src="js/utils.js" defer></script>
+<script src="js/storage.js" defer></script>
+<script src="js/database.js" defer></script>
+<script src="js/modal.js" defer></script>
+<script src="js/theme.js" defer></script>
+<script src="js/sidebar.js" defer></script>
+<script src="js/animation.js" defer></script>
+<script src="js/router.js" defer></script>
+<script src="js/search.js" defer></script>
+<script src="js/achievements.js" defer></script>
+<script src="js/auth.js" defer></script>
+<script src="js/profile.js" defer></script>
+<script src="js/pinlock.js" defer></script>
+<script src="js/backup.js" defer></script>
+<script src="js/settings.js" defer></script>
+<script src="js/dashboard.js" defer></script>
+<script src="js/tasks.js" defer></script>
+<script src="js/planner.js" defer></script>
+<script src="js/study.js" defer></script>
+<script src="js/goals.js" defer></script>
+<script src="js/expenses.js" defer></script>
+<script src="js/habits.js" defer></script>
+<script src="js/health.js" defer></script>
+<script src="js/journal.js" defer></script>
+<script src="js/analytics.js" defer></script>
+<script src="js/admin.js" defer></script>
+<script src="js/splash.js" defer></script>
+<script src="js/pwa.js" defer></script>
+<script src="js/downloads.js" defer></script>
+<script src="js/notifications.js" defer></script>
+<script src="js/api.js" defer></script>
+<script src="js/app.js" defer></script>
+</body>
+</html>
