@@ -1,0 +1,15 @@
+{
+  "_comment": "Example seed data for a demo/onboarding account. Not loaded automatically — intended for manual use (e.g. via the browser console: call newUserData() then Object.assign the result with this file's contents) if a future 'Try a demo' feature is added.",
+
+  "profile": { "name": "Demo User", "email": "demo@atlas.app", "mobile": "", "bio": "Exploring Atlas.", "photo": "", "joinDate": "2026-01-01T00:00:00.000Z" },
+  "tasks": [
+    { "id": "seed1", "title": "Explore the Dashboard", "priority": "Medium", "due": "2026-01-01", "time": "", "category": "General", "notes": "", "completed": true, "completedOn": "2026-01-01", "pinned": false, "archived": false, "recurring": "none", "createdAt": 0 },
+    { "id": "seed2", "title": "Add your first habit", "priority": "Low", "due": "2026-01-02", "time": "", "category": "General", "notes": "", "completed": false, "pinned": false, "archived": false, "recurring": "none", "createdAt": 0 }
+  ],
+  "goals": [
+    { "id": "seed3", "title": "Read 12 books this year", "type": "yearly", "category": "Personal", "target": 12, "progress": 1 }
+  ],
+  "habits": [
+    { "id": "seed4", "name": "Morning walk", "icon": "footprints", "days": {} }
+  ]
+}

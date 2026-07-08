@@ -1,0 +1,43 @@
+{
+  "_comment": "Reference only. The app does NOT fetch this file at runtime — the actual default data is generated in js/storage.js by defaultDB() and newUserData(), so a fresh install works even fully offline with zero network requests. This file exists purely as living documentation of that shape, kept in sync by hand whenever storage.js's shape changes.",
+
+  "defaultDB_shape": {
+    "users": [
+      { "username": "admin", "password": "admin123", "role": "admin", "name": "Admin", "email": "admin@aura.app" }
+    ],
+    "session": null,
+    "settings": { "theme": "light", "anim": true, "accent": "#8FD65C", "fontSize": 16 },
+    "perUser": {}
+  },
+
+  "newUserData_shape": {
+    "profile": { "name": "New User", "email": "", "mobile": "", "bio": "", "photo": "", "joinDate": "ISO-8601 timestamp" },
+    "security": { "pinHash": null, "pinEnabled": false, "autoLockMinutes": 5, "sessionTimeoutMinutes": 30, "lockOnStartup": false },
+    "tasks": [],
+    "events": [],
+    "goals": [],
+    "subjects": [
+      { "id": "generated", "name": "Physics", "hours": 0 },
+      { "id": "generated", "name": "Chemistry", "hours": 0 },
+      { "id": "generated", "name": "English", "hours": 0 }
+    ],
+    "studyLog": {},
+    "studyTargets": { "daily": 2, "weekly": 14 },
+    "expenses": [],
+    "habits": [
+      { "id": "generated", "name": "Workout", "icon": "dumbbell", "days": {} },
+      { "id": "generated", "name": "Reading", "icon": "book", "days": {} },
+      { "id": "generated", "name": "Meditation", "icon": "flower-2", "days": {} }
+    ],
+    "health": {},
+    "journal": [],
+    "mood": {},
+    "activity": [],
+    "uiState": { "page": "dashboard", "taskFilter": "all", "goalFilter": "daily", "taskSearch": "", "journalSearch": "", "expSearch": "" },
+    "achievements": { "unlocked": {} },
+    "dashboardLayout": {
+      "order": ["statTasks","statStudy","statWater","statMood","statGoals","statExpenses","weekSummary","miniCal","activity","quickActions"],
+      "hidden": []
+    }
+  }
+}
