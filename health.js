@@ -25,6 +25,7 @@ function saveHealth(){
     exercise:Number(document.getElementById('hExercise').value)||0,
   };
   persist(); renderHealth(); renderDashboard();
+  awardXP(5, 'health_logged'); // flat per-save amount (not per-field) to avoid multi-field edits over-awarding
 }
 let healthChartInst;
 function renderHealth(){

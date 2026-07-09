@@ -49,7 +49,7 @@ function saveTask(id){
 function toggleTaskDone(id){
   const ud=userData(); const t=ud.tasks.find(x=>x.id===id);
   t.completed=!t.completed; t.completedOn = t.completed? todayStr() : null;
-  persist(); if(t.completed) logActivity('Completed “'+t.title+'”');
+  persist(); if(t.completed){ logActivity('Completed “'+t.title+'”'); awardXP(10, 'task_completed'); }
   renderTasks(); renderDashboard();
 }
 function togglePin(id){ const ud=userData(); const t=ud.tasks.find(x=>x.id===id); t.pinned=!t.pinned; persist(); renderTasks(); }

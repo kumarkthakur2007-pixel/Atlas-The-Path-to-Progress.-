@@ -31,6 +31,7 @@ function saveExpense(){
   if(!amt){ showToast('error','Enter an amount.'); return; }
   ud.expenses.unshift({id:uid(), type:document.getElementById('xType').value, amount:amt, category:document.getElementById('xCategory').value, note:document.getElementById('xNote').value, date:document.getElementById('xDate').value});
   persist(); closeModal(); renderExpenses(); showToast('success','Transaction added.');
+  awardXP(5, 'expense_logged');
 }
 function deleteExpense(id){ const ud=userData(); ud.expenses=ud.expenses.filter(e=>e.id!==id); persist(); renderExpenses(); }
 function exportExpensesCSV(){

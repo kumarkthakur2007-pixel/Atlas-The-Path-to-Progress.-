@@ -31,7 +31,10 @@ function saveGoal(){
   persist(); closeModal(); renderGoals(); showToast('success','Goal added.');
 }
 function bumpGoal(id, delta){
-  const ud=userData(); const g=ud.goals.find(x=>x.id===id); g.progress=Math.max(0, Math.min(g.target, g.progress+delta)); persist(); renderGoals(); checkAchievements();
+  const ud=userData(); const g=ud.goals.find(x=>x.id===id);
+  const wasComplete = g.progress >= g.target;
+  g.progress=Math.max(0, Math.min(g.target, g.progress+delta)); persist(); renderGoals(); checkAchievements();
+  if(!wasComplete && g.progress >= g.target) awardXP(50, 'goal_completed');
 }
 function deleteGoal(id){ const ud=userData(); ud.goals=ud.goals.filter(g=>g.id!==id); persist(); renderGoals(); }
 function renderGoals(){

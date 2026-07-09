@@ -1,4 +1,4 @@
-const VERSION = 'atlas-v2.0.1';
+const VERSION = 'atlas-v2.1.0';
 const CORE_CACHE = `${VERSION}-core`;
 const CDN_CACHE = `${VERSION}-cdn`;
 
@@ -14,6 +14,7 @@ const CORE_ASSETS = [
   './calendar.css',
   './components.css',
   './dashboard.css',
+  './island.css',
   './profile.css',
   './responsive.css',
   './settings.css',
@@ -38,6 +39,11 @@ const CORE_ASSETS = [
   './goals.js',
   './habits.js',
   './health.js',
+  './island-assets.js',
+  './island-engine.js',
+  './island-render.js',
+  './island-state.js',
+  './island.js',
   './journal.js',
   './modal.js',
   './notifications.js',

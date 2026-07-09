@@ -27,7 +27,9 @@ function saveHabit(){
 function toggleHabitDay(id, offset){
   const ud=userData(); const h=ud.habits.find(x=>x.id===id);
   const d=new Date(); d.setDate(d.getDate()-offset); const key=d.toISOString().slice(0,10);
+  const turningOn = !h.days[key];
   h.days[key]=!h.days[key]; persist(); renderHabits(); renderDashboard();
+  if(turningOn) awardXP(15, 'habit_checked');
 }
 function deleteHabit(id){ const ud=userData(); ud.habits=ud.habits.filter(h=>h.id!==id); persist(); renderHabits(); }
 function habitStreak(h){

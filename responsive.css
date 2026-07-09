@@ -38,4 +38,5 @@
   .connect-grid{ grid-template-columns:1fr; }
   .habit-days{ margin-left:0; width:100%; justify-content:flex-start; overflow-x:auto; padding-bottom:2px; }
   .dev-profile-head{ text-align:center; justify-content:center; }
+  .island-progress-top{ flex-direction:column; align-items:flex-start; gap:6px; }
 }

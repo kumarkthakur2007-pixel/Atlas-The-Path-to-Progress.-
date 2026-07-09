@@ -72,7 +72,8 @@ function newUserData(name,email){
     health:{}, journal:[], mood:{}, activity:[],
     uiState:{ page:'dashboard', taskFilter:'all', goalFilter:'daily', taskSearch:'', journalSearch:'', expSearch:'' },
     achievements:{ unlocked:{} },
-    dashboardLayout:{ order: DEFAULT_WIDGET_ORDER.slice(), hidden: [] }
+    dashboardLayout:{ order: DEFAULT_WIDGET_ORDER.slice(), hidden: [] },
+    island: createDefaultIslandState()
   };
 }
 
@@ -98,6 +99,8 @@ function userData(){
     // keep layout in sync if new widgets were introduced after this account was created
     DEFAULT_WIDGET_ORDER.forEach(w=>{ if(!ud.dashboardLayout.order.includes(w)) ud.dashboardLayout.order.push(w); });
   }
+  if(!ud.island) ud.island = createDefaultIslandState();
+  else ud.island = migrateIslandState(ud.island);
   return ud;
 }
 function logActivity(text){

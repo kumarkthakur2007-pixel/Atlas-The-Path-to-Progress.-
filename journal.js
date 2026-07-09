@@ -29,6 +29,7 @@ function saveJournal(){
   ud.journal.unshift({id:uid(), text, mood:window.selectedMood||'🙂', tags:(document.getElementById('jTags').value||'').split(',').map(t=>t.trim()).filter(Boolean), date:new Date().toISOString()});
   ud.mood[todayStr()]=window.selectedMood;
   persist(); closeModal(); renderJournal(); showToast('success','Entry saved.'); renderDashboard();
+  awardXP(10, 'journal_entry');
 }
 function deleteJournal(id){ const ud=userData(); ud.journal=ud.journal.filter(j=>j.id!==id); persist(); renderJournal(); }
 function renderJournal(){

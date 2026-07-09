@@ -25,6 +25,7 @@
 // Page id -> hash segment. Anything not listed falls back to its own name.
 const ROUTES = {
   dashboard:    'home',
+  island:       'island',
   profile:      'profile',
   tasks:        'tasks',
   planner:      'calendar',
@@ -70,6 +71,7 @@ function goPage(name, opts){
   if(name==='admin') renderAdmin();
   if(name==='profile') renderProfile();
   if(name==='achievements') renderAchievements();
+  if(name==='island') renderIslandPage();
   window.scrollTo({top:0, behavior:'smooth'});
 
   const ud = userData();

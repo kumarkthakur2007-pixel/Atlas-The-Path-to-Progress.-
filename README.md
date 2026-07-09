@@ -10,23 +10,22 @@ Instead, JS is split into 33 classic `<script defer>` files — genuinely one re
 
 ## Project structure
 
+**Actual deployed layout — everything flat**, one directory, no subfolders (see the note further down for why):
+
 ```
 Atlas/
-├── index.html              — the only HTML file; every screen renders inside it
-├── manifest.json            — PWA manifest
-├── service-worker.js        — offline caching + app-shell precache
-├── offline.html             — shown when a page was never cached and the network is down
+├── index.html                — the only HTML file; every screen renders inside it
+├── manifest.json              — PWA manifest
+├── service-worker.js          — offline caching + app-shell precache
+├── offline.html               — shown when a page was never cached and the network is down
 ├── favicon.ico
-├── css/                     — 14 files, one per concern (see below)
-├── js/                      — 33 files, one per feature (see below)
-├── assets/
-│   ├── logo/                — source logo (PNG + WebP)
-│   └── icons/                — PWA icon set, 72–512px
-├── data/
-│   ├── default.json         — documents the default data shape (reference only — see file)
-│   └── seed.json             — example demo data (reference only — see file)
+├── style.css + 14 more .css   — 15 files total, one per concern (see below)
+├── app.js + 38 more .js       — 39 files total, one per feature (see below)
+├── atlas-logo.png / .webp     — source logo
+├── icon-72.png … icon-512.png — PWA icon set
+├── default.json / seed.json   — reference data shapes (see files)
 └── docs/
-    └── README.md             — this file
+    └── README.md               — this file
 ```
 
 ## CSS (`css/`)
@@ -85,4 +84,23 @@ Every function and every top-level `let`/`const` from the original single file w
 5. Add `css/yourfeature.css` if it needs unique styling, and an `@import` line in `style.css`.
 6. Add its file(s) to `CORE_ASSETS` in `service-worker.js` so it's cached offline.
 
-That's the whole loop — no build step, no bundler, no config to touch.
+**A note on the actual deployed structure:** this project is served **flat** — every CSS, JS, and image file sits directly alongside `index.html`, with no `css/`/`js/`/`assets/` subfolders. That's a deliberate adaptation, not the original plan: mobile GitHub uploads don't reliably preserve folder structure, and rather than fight that repeatedly, the whole project (and every file reference inside it) was flattened to match how it actually gets deployed. `style.css`'s `@import` statements and every `<script src="...">` tag in `index.html` all use bare filenames for exactly this reason.
+
+## Atlas Island (Phase 1)
+
+The flagship feature — a living, layered SVG world that grows as the user is productive, instead of a checklist. Built across 6 dedicated files, each with a single, strict responsibility:
+
+| File | Responsibility |
+|---|---|
+| `island-assets.js` | The **Asset Registry** — the only place a new unlockable object (flower, tree, building, animal, effect...) gets defined. Adding a future asset means adding one entry here; nothing else changes. |
+| `island-state.js` | The **versioned state shape** (`ISLAND_STATE_VERSION`) — XP, level, coins, unlocked list, world conditions, permanent timeline. `migrateIslandState()` is the one place future phases add a migration step, so old saves never break. |
+| `island-engine.js` | The **unlock engine** — generically evaluates the registry against state (`evaluateIslandUnlocks`), completely data-driven. No asset-specific if/else anywhere. Also owns `awardXP()`, the single entry point every feature module calls to grant progress. |
+| `island-render.js` | The **modular SVG renderer** — builds the scene once, then updates each layer (`<g id="layer-sky">`, `layer-cloud`, `layer-flower`, etc.) independently. Unlocking one flower only appends one SVG node into one layer group; nothing else re-renders. Every future-phase layer (building, citizen, bird, weather, fog, effects...) already exists as an empty group, ready to be populated. |
+| `island.js` | The **page orchestrator** — HUD (XP bar, level, next-unlock preview), the unlock celebration popup, and the day/night clock. The only island file that touches page-level DOM outside the SVG itself. |
+| `island.css` | Layout, HUD styling, and every animation (cloud drift, wave shimmer, sun glow, star twinkle, unlock reveal) — all CSS `transform`/`opacity` only, GPU-accelerated, no per-frame JS. |
+
+**XP sources (Phase 1):** completing a task (+10), checking a habit (+15), a completed Pomodoro session (+20/hour), completing a goal (+50), a journal entry (+10), logging an expense (+5), logging health data (+5/save).
+
+**Phase 1 unlocks (exactly as specified):** 100 XP → Wildflower, 300 XP → Sapling, 600 XP → Garden Bench, 1000 XP → Stone Bridge.
+
+**What's deliberately NOT in Phase 1** (each already has a slot reserved in the architecture, so building it later is additive, not a rewrite): weather system, seasons, coins/Island Store, more buildings, citizens, pets, photo mode, and the visible unlock timeline UI (the data is already being recorded in `islandState.timeline`, just not rendered anywhere yet).

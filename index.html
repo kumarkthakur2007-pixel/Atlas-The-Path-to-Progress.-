@@ -125,6 +125,7 @@
     <ul class="navlist">
       <li><a class="navlink" data-page="profile" onclick="goPage('profile')"><i data-lucide="user-circle"></i>Profile</a></li>
       <li><a class="navlink active" data-page="dashboard" onclick="goPage('dashboard')"><i data-lucide="layout-grid"></i>Dashboard</a></li>
+      <li><a class="navlink" data-page="island" onclick="goPage('island')"><i data-lucide="palmtree"></i>Atlas Island</a></li>
       <li><a class="navlink" data-page="analytics" onclick="goPage('analytics')"><i data-lucide="bar-chart-3"></i>Analytics</a></li>
     </ul>
 
@@ -224,6 +225,30 @@
           <button class="btn btn-ghost" onclick="cancelProfileEdit()">Cancel</button>
           <button class="btn btn-primary" onclick="saveProfileFull()">Save changes</button>
         </div>
+      </div>
+    </section>
+
+    <!-- ======================= ATLAS ISLAND ======================= -->
+    <section class="page" id="page-island">
+      <div class="page-head">
+        <div><div class="page-eyebrow">Overview</div><div class="page-title">Atlas Island</div><div class="page-sub">Your discipline, growing into a living world.</div></div>
+        <div class="island-hud-chip glass">
+          <span id="islandLevel">Level 1</span>
+          <span class="island-hud-dot"></span>
+          <span id="islandXpLabel">0 XP</span>
+        </div>
+      </div>
+
+      <div class="island-stage glass card">
+        <div id="islandSvgRoot" class="island-svg-root"></div>
+      </div>
+
+      <div class="card glass island-progress-card">
+        <div class="island-progress-top">
+          <span class="island-progress-label" id="islandUnlockedCount">0 / 4 unlocked</span>
+          <span class="island-progress-next" id="islandNextUnlock">Next: Wildflower at 100 XP (100 to go)</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="islandXpBar" style="width:0%"></div></div>
       </div>
     </section>
 
@@ -921,6 +946,11 @@
 <script src="router.js" defer></script>
 <script src="search.js" defer></script>
 <script src="achievements.js" defer></script>
+<script src="island-assets.js" defer></script>
+<script src="island-state.js" defer></script>
+<script src="island-engine.js" defer></script>
+<script src="island-render.js" defer></script>
+<script src="island.js" defer></script>
 <script src="auth.js" defer></script>
 <script src="profile.js" defer></script>
 <script src="pinlock.js" defer></script>

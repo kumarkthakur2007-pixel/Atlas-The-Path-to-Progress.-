@@ -1,0 +1,72 @@
+/* ============================================================
+   ATLAS ISLAND
+   ============================================================
+   Layout, HUD styling, and every CSS-driven animation for the
+   island scene (clouds, waves, stars, sun glow, unlock reveal).
+   Deliberately CSS/transform-only animations here — GPU
+   accelerated, no per-frame JS needed for any of this.
+   ============================================================ */
+
+.island-hud-chip{
+  display:flex; align-items:center; gap:10px; padding:10px 18px; border-radius:100px;
+  font-size:13px; font-weight:800; color:var(--text-1);
+}
+.island-hud-dot{ width:4px; height:4px; border-radius:50%; background:var(--text-3); }
+
+.island-stage{
+  padding:0; border-radius:30px; overflow:hidden; margin-bottom:20px;
+  box-shadow: var(--shadow-lift);
+}
+.island-svg-root{ width:100%; line-height:0; }
+.island-svg{ width:100%; height:auto; display:block; }
+
+.island-progress-card{ padding:22px 26px; }
+.island-progress-top{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; gap:14px; flex-wrap:wrap; }
+.island-progress-label{ font-weight:800; font-size:13.5px; }
+.island-progress-next{ font-size:12.5px; color:var(--text-2); font-weight:600; }
+
+/* ---- Clouds: pure transform drift, GPU accelerated ---- */
+.island-cloud{
+  animation-name: islandCloudDrift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes islandCloudDrift{
+  0%   { transform: translateX(-60px) translateY(0); }
+  50%  { transform: translateX(720px) translateY(-6px); }
+  100% { transform: translateX(-60px) translateY(0); }
+}
+
+/* ---- Ocean surface shimmer ---- */
+.island-wave{
+  animation: islandWaveShift 6s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes islandWaveShift{
+  0%,100%{ transform: translateX(0); opacity:0.35; }
+  50%{ transform: translateX(14px); opacity:0.55; }
+}
+
+/* ---- Sun: soft breathing glow ---- */
+.island-sun{ animation: islandSunGlow 4s ease-in-out infinite; transform-origin: center; }
+@keyframes islandSunGlow{
+  0%,100%{ opacity:1; filter: drop-shadow(0 0 6px rgba(245,215,110,0.5)); }
+  50%{ opacity:0.92; filter: drop-shadow(0 0 16px rgba(245,215,110,0.85)); }
+}
+
+/* ---- Stars: gentle twinkle ---- */
+.island-star{ animation: islandTwinkle 2.4s ease-in-out infinite; transform-origin: center; }
+@keyframes islandTwinkle{
+  0%,100%{ opacity:0.3; }
+  50%{ opacity:1; }
+}
+
+/* ---- Newly-unlocked object reveal: fade + rise + settle ---- */
+.island-object-enter{ opacity:0; transform: translateY(10px) scale(0.9); transform-origin: bottom center; }
+.island-object-enter.island-object-in{
+  opacity:1; transform: translateY(0) scale(1);
+  transition: opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1);
+}
+
+.island-unlock-overlay .achievement-badge svg{ animation: islandBadgeSpin 6s linear infinite; }
+@keyframes islandBadgeSpin{ from{ transform: rotate(0deg); } to{ transform: rotate(360deg); } }

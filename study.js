@@ -61,6 +61,7 @@ function logStudySession(hours){
   ud.studyLog[k]=(ud.studyLog[k]||0)+hours; persist();
   logActivity('Completed a '+Math.round(hours*60)+' min focus session');
   renderStudy(); renderDashboard();
+  awardXP(Math.round(hours*20), 'study_session');
 }
 function saveStudyTargets(){
   const ud=userData();
