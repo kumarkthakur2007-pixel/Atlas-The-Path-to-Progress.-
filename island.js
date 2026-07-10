@@ -19,6 +19,11 @@
 
 let _islandDayNightTimer = null;
 
+const ISLAND_WEATHER_LABELS = {
+  sunny: '☀️ Sunny', cloudy: '☁️ Cloudy', rain: '🌧️ Rain', storm: '⛈️ Storm',
+  snow: '❄️ Snow', fog: '🌫️ Fog', rainbow: '🌈 Rainbow'
+};
+
 function getIslandTimeOfDay(){
   const h = new Date().getHours();
   return (h >= 6 && h < 19) ? 'day' : 'night';
@@ -33,18 +38,29 @@ function renderIslandPage(){
   const liveTimeOfDay = getIslandTimeOfDay();
   if(ud.island.world.timeOfDay !== liveTimeOfDay){ ud.island.world.timeOfDay = liveTimeOfDay; persist(); }
 
+  const todayWeather = pickDailyWeather();
+  if(ud.island.world.weather !== todayWeather){ ud.island.world.weather = todayWeather; persist(); }
+
   const container = document.getElementById('islandSvgRoot');
   if(container) buildIslandScene(container, ud.island);
 
   renderIslandHud(ud.island);
+  renderIslandTimeline(ud.island);
 
   clearInterval(_islandDayNightTimer);
   _islandDayNightTimer = setInterval(()=>{
     const ud2 = userData(); if(!ud2 || !ud2.island) return;
     const t = getIslandTimeOfDay();
-    if(ud2.island.world.timeOfDay !== t){
-      ud2.island.world.timeOfDay = t; persist();
+    const w = pickDailyWeather();
+    let changed = false;
+    if(ud2.island.world.timeOfDay !== t){ ud2.island.world.timeOfDay = t; changed = true; }
+    if(ud2.island.world.weather !== w){ ud2.island.world.weather = w; changed = true; }
+    if(changed){
+      persist();
       refreshSkyAndSun(ud2.island);
+      renderWeatherLayer(ud2.island);
+      renderFogLayer(ud2.island);
+      renderIslandHud(ud2.island);
     }
   }, 5 * 60 * 1000);
 }
@@ -59,15 +75,37 @@ function renderIslandHud(state){
   const barEl = document.getElementById('islandXpBar');
   const nextEl = document.getElementById('islandNextUnlock');
   const countEl = document.getElementById('islandUnlockedCount');
+  const weatherEl = document.getElementById('islandWeatherLabel');
   if(levelEl) levelEl.textContent = 'Level ' + state.level;
   if(xpEl) xpEl.textContent = state.xp + ' XP';
   if(barEl) barEl.style.width = xpBarPct + '%';
   if(countEl) countEl.textContent = state.unlocked.length + ' / ' + getIslandAssetsSorted().length + ' unlocked';
+  if(weatherEl) weatherEl.textContent = ISLAND_WEATHER_LABELS[state.world.weather] || '☀️ Sunny';
   if(nextEl){
     nextEl.textContent = next
       ? `Next: ${next.name} at ${next.unlock.value} XP (${Math.max(0, next.unlock.value - state.xp)} to go)`
-      : 'Every Phase 1 object unlocked — more arrive in a future update.';
+      : 'Every current object unlocked — more arrive in a future update.';
   }
+}
+
+/** Renders the permanent unlock history recorded in islandState.timeline (newest first). Purely additive — the data has been collected since Phase 1. */
+function renderIslandTimeline(state){
+  const wrap = document.getElementById('islandTimelineWrap');
+  if(!wrap) return;
+  if(!state.timeline.length){
+    wrap.innerHTML = '<div class="empty-state" style="padding:24px 12px;"><div class="es-title">Your island\'s story starts now</div>Keep going — your first unlock is on its way.</div>';
+    return;
+  }
+  const rows = state.timeline.slice().reverse().map(entry=>{
+    const asset = ISLAND_ASSET_REGISTRY[entry.assetId];
+    if(!asset) return '';
+    const when = new Date(entry.unlockedAt);
+    return `<div class="activity-item">
+      <div class="act-dot" style="background:var(--natural-green)"></div>
+      <div><div class="act-text">${escapeHtml(asset.name)} joined your island</div><div class="act-time">${when.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</div></div>
+    </div>`;
+  }).join('');
+  wrap.innerHTML = rows;
 }
 
 /** The reaction hook island-engine.js calls after awardXP() changes state. Kept out of island-engine.js so that file stays DOM-free. */

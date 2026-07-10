@@ -86,7 +86,7 @@ Every function and every top-level `let`/`const` from the original single file w
 
 **A note on the actual deployed structure:** this project is served **flat** — every CSS, JS, and image file sits directly alongside `index.html`, with no `css/`/`js/`/`assets/` subfolders. That's a deliberate adaptation, not the original plan: mobile GitHub uploads don't reliably preserve folder structure, and rather than fight that repeatedly, the whole project (and every file reference inside it) was flattened to match how it actually gets deployed. `style.css`'s `@import` statements and every `<script src="...">` tag in `index.html` all use bare filenames for exactly this reason.
 
-## Atlas Island (Phase 1)
+## Atlas Island (Phase 1 + Phase 2)
 
 The flagship feature — a living, layered SVG world that grows as the user is productive, instead of a checklist. Built across 6 dedicated files, each with a single, strict responsibility:
 
@@ -99,8 +99,10 @@ The flagship feature — a living, layered SVG world that grows as the user is p
 | `island.js` | The **page orchestrator** — HUD (XP bar, level, next-unlock preview), the unlock celebration popup, and the day/night clock. The only island file that touches page-level DOM outside the SVG itself. |
 | `island.css` | Layout, HUD styling, and every animation (cloud drift, wave shimmer, sun glow, star twinkle, unlock reveal) — all CSS `transform`/`opacity` only, GPU-accelerated, no per-frame JS. |
 
-**XP sources (Phase 1):** completing a task (+10), checking a habit (+15), a completed Pomodoro session (+20/hour), completing a goal (+50), a journal entry (+10), logging an expense (+5), logging health data (+5/save).
+**XP sources:** completing a task (+10), checking a habit (+15), a completed Pomodoro session (+20/hour), completing a goal (+50), a journal entry (+10), logging an expense (+5), logging health data (+5/save).
 
-**Phase 1 unlocks (exactly as specified):** 100 XP → Wildflower, 300 XP → Sapling, 600 XP → Garden Bench, 1000 XP → Stone Bridge.
+**Unlocks so far (exactly as specified):** 100 XP → Wildflower, 300 XP → Sapling, 600 XP → Garden Bench, 1000 XP → Stone Bridge, 2000 XP → Cozy House, 5000 XP → Little Library.
 
-**What's deliberately NOT in Phase 1** (each already has a slot reserved in the architecture, so building it later is additive, not a rewrite): weather system, seasons, coins/Island Store, more buildings, citizens, pets, photo mode, and the visible unlock timeline UI (the data is already being recorded in `islandState.timeline`, just not rendered anywhere yet).
+**Phase 2 added:** the Weather system (Sunny/Cloudy/Rain/Storm/Snow/Fog/Rainbow, weighted-random per day) populating the previously-empty `weather`/`fog` layers, the first two Building-layer unlocks, and a Timeline card surfacing the unlock history that's been recorded since Phase 1.
+
+**What's deliberately NOT in yet** (each already has a slot reserved in the architecture, so building it later is additive, not a rewrite): Seasons, coins/Island Store, more buildings (Park, School, Town Hall, Temple, Harbor, Airport, Civilization), citizens, pets, and photo mode.

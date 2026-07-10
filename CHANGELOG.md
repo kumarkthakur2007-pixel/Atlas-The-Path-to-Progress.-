@@ -2,6 +2,26 @@
 
 All notable changes to Atlas are documented here.
 
+## [2.2.0] — Atlas Island, Phase 2
+
+Weather, two new buildings, and a visible history — all built on Phase 1's foundation without changing its core logic.
+
+**Added**
+- Weather system — Sunny, Cloudy, Rain, Storm, Snow, Fog, Rainbow, weighted-random and stable per day (changes daily, not on every render)
+- Populated the `weather` and `fog` layers left empty and reserved since Phase 1 — rain/snow particles, a lightning flash for storms, a rainbow arc, a drifting fog veil
+- Two new unlocks continuing the XP ladder exactly as specified: Cozy House (2,000 XP), Little Library (5,000 XP) — first assets in the `building` layer, also reserved since Phase 1
+- Timeline card on the Island page — renders `islandState.timeline`, which has been recording every unlock since Phase 1 with no UI until now
+- Weather HUD chip next to the Level/XP chip
+
+**Changed**
+- `island-assets.js` — 2 new registry entries + their `render()` functions; new `ISLAND_WEATHER_TYPES` weighted list
+- `island-render.js` — new `building` placement band; `renderWeatherLayer()`, `renderFogLayer()`, `pickDailyWeather()`; both hooked into `buildIslandScene()`
+- `island.js` — daily weather assignment (mirrors the existing day/night check pattern), weather HUD, `renderIslandTimeline()`
+- `island.css` — rain/snow/lightning/fog-drift keyframes, all transform/opacity only
+- `service-worker.js` — version bumped to `atlas-v2.2.0` (no new files this phase, existing ones changed)
+
+**Verified before ship** — same full sweep as Phase 1: zero JS syntax errors, every `getElementById()` call resolves (including the two new dynamic layer ids, `layer-weather`/`layer-fog`, which were already reserved in Phase 1's scaffold), CSS brace-balanced, HTML section tags balanced.
+
 ## [2.1.0] — Atlas Island, Phase 1
 
 The flagship feature: a living, layered SVG island that grows with real productivity instead of a checklist.

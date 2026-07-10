@@ -70,3 +70,36 @@
 
 .island-unlock-overlay .achievement-badge svg{ animation: islandBadgeSpin 6s linear infinite; }
 @keyframes islandBadgeSpin{ from{ transform: rotate(0deg); } to{ transform: rotate(360deg); } }
+
+/* ---- Weather: rain ---- */
+.island-raindrop{ animation: islandRainFall 0.7s linear infinite; }
+@keyframes islandRainFall{
+  0%{ transform: translateY(-20px); opacity:0; }
+  10%{ opacity:1; }
+  100%{ transform: translateY(420px); opacity:0.2; }
+}
+
+/* ---- Weather: storm lightning flash ---- */
+.island-lightning{ animation: islandLightningFlash 7s ease-in-out infinite; }
+@keyframes islandLightningFlash{
+  0%, 94%, 100%{ opacity:0; }
+  95%{ opacity:0.5; }
+  96%{ opacity:0; }
+  97%{ opacity:0.35; }
+  98%{ opacity:0; }
+}
+
+/* ---- Weather: snow ---- */
+.island-snowflake{ animation: islandSnowFall 5.5s linear infinite; }
+@keyframes islandSnowFall{
+  0%{ transform: translate(0,-20px); opacity:0; }
+  10%{ opacity:0.85; }
+  100%{ transform: translate(18px, 420px); opacity:0.2; }
+}
+
+/* ---- Weather: fog veil, slow horizontal drift ---- */
+.island-fog-veil{ animation: islandFogDrift 18s ease-in-out infinite; }
+@keyframes islandFogDrift{
+  0%,100%{ transform: translateX(0); opacity:0.55; }
+  50%{ transform: translateX(30px); opacity:0.7; }
+}

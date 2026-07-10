@@ -37,7 +37,8 @@ const ISLAND_LAYER_IDS = [
 const ISLAND_PLACEMENT_BANDS = {
   flower:      { y: 300, xStart: 110, xEnd: 690, spacing: 46 },
   tree:        { y: 318, xStart: 90,  xEnd: 710, spacing: 90 },
-  decoration:  { y: 306, xStart: 150, xEnd: 650, spacing: 130 }
+  decoration:  { y: 306, xStart: 150, xEnd: 650, spacing: 130 },
+  building:    { y: 322, xStart: 130, xEnd: 670, spacing: 150 }
 };
 const ISLAND_FIXED_PLACEMENT = {
   bridge_1: { x: 610, y: 316 }
@@ -71,6 +72,8 @@ function buildIslandScene(containerEl, state){
   buildStaticGroundAndOcean();
   buildClouds();
   refreshSkyAndSun(state);
+  renderWeatherLayer(state);
+  renderFogLayer(state);
   renderUnlockedAssets(state); // draw everything already unlocked, no popups
 }
 
@@ -141,6 +144,70 @@ function refreshSkyAndSun(state){
     ? `<circle cx="660" cy="70" r="26" fill="#F4F1E8"/><circle cx="670" cy="62" r="26" fill="url(#skyGradient)"/>`
     : `<circle cx="140" cy="75" r="34" fill="#F5D76E" class="island-sun"/>`;
 }
+
+/** Deterministic-per-day weighted random pick, so weather feels natural (stable within a day, changes daily) rather than flickering on every render. */
+function pickDailyWeather(){
+  const seedStr = new Date().toDateString();
+  let seed = 0;
+  for(let i=0;i<seedStr.length;i++) seed = (seed * 31 + seedStr.charCodeAt(i)) >>> 0;
+
+  const totalWeight = ISLAND_WEATHER_TYPES.reduce((sum,w)=>sum+w.weight, 0);
+  let roll = seed % totalWeight;
+  for(const w of ISLAND_WEATHER_TYPES){
+    if(roll < w.weight) return w.id;
+    roll -= w.weight;
+  }
+  return 'sunny';
+}
+
+/** Populates <g id="layer-weather"> — rain/snow/storm/rainbow. Sunny/cloudy/fog render nothing here (cloudy = more clouds via buildClouds; fog = layer-fog below). */
+function renderWeatherLayer(state){
+  const layer = document.getElementById('layer-weather');
+  if(!layer) return;
+  const w = state.world.weather;
+  layer.innerHTML = '';
+
+  if(w === 'rain' || w === 'storm'){
+    let drops = '';
+    for(let i=0;i<40;i++){
+      const x = (i * 53) % ISLAND_VIEWBOX.w;
+      const delay = (i % 10) * 0.12;
+      drops += `<line class="island-raindrop" x1="${x}" y1="0" x2="${x-6}" y2="18" stroke="rgba(255,255,255,0.55)" stroke-width="2" style="animation-delay:${delay}s;"/>`;
+    }
+    layer.innerHTML = drops;
+    if(w === 'storm'){
+      layer.innerHTML += `<rect class="island-lightning" x="0" y="0" width="${ISLAND_VIEWBOX.w}" height="${ISLAND_VIEWBOX.h}" fill="#fff" opacity="0"/>`;
+    }
+  } else if(w === 'snow'){
+    let flakes = '';
+    for(let i=0;i<34;i++){
+      const x = (i * 61) % ISLAND_VIEWBOX.w;
+      const delay = (i % 12) * 0.35;
+      const size = 2 + (i % 3);
+      flakes += `<circle class="island-snowflake" cx="${x}" cy="-10" r="${size}" fill="#fff" opacity="0.85" style="animation-delay:${delay}s;"/>`;
+    }
+    layer.innerHTML = flakes;
+  } else if(w === 'rainbow'){
+    layer.innerHTML = `<path d="M 60 300 A 300 300 0 0 1 740 300" fill="none" stroke-width="8" opacity="0.55"
+      stroke="url(#rainbowGradient)"/>`;
+    const defs = _islandSvgEl.querySelector('defs');
+    defs.innerHTML += `<linearGradient id="rainbowGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E85B5B"/><stop offset="20%" stop-color="#F5B942"/>
+      <stop offset="40%" stop-color="#D6E34B"/><stop offset="60%" stop-color="#6F9D24"/>
+      <stop offset="80%" stop-color="#2F5F67"/><stop offset="100%" stop-color="#8FD65C"/>
+    </linearGradient>`;
+  }
+}
+
+/** Populates <g id="layer-fog"> — a slow-drifting translucent veil, only visible when weather is 'fog'. */
+function renderFogLayer(state){
+  const layer = document.getElementById('layer-fog');
+  if(!layer) return;
+  layer.innerHTML = state.world.weather === 'fog'
+    ? `<rect class="island-fog-veil" x="-100" y="220" width="${ISLAND_VIEWBOX.w + 200}" height="140" fill="rgba(240,245,240,0.55)"/>`
+    : '';
+}
+
 
 /** Draws every unlocked asset that isn't already in the DOM — the incremental part. Safe to call repeatedly. */
 function renderUnlockedAssets(state){
