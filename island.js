@@ -23,6 +23,9 @@ const ISLAND_WEATHER_LABELS = {
   sunny: '☀️ Sunny', cloudy: '☁️ Cloudy', rain: '🌧️ Rain', storm: '⛈️ Storm',
   snow: '❄️ Snow', fog: '🌫️ Fog', rainbow: '🌈 Rainbow'
 };
+const ISLAND_SEASON_LABELS = {
+  spring: '🌸 Spring', summer: '☀️ Summer', monsoon: '🌧️ Monsoon', autumn: '🍂 Autumn', winter: '❄️ Winter'
+};
 
 function getIslandTimeOfDay(){
   const h = new Date().getHours();
@@ -40,6 +43,9 @@ function renderIslandPage(){
 
   const todayWeather = pickDailyWeather();
   if(ud.island.world.weather !== todayWeather){ ud.island.world.weather = todayWeather; persist(); }
+
+  const currentSeason = pickCurrentSeason();
+  if(ud.island.world.season !== currentSeason){ ud.island.world.season = currentSeason; persist(); }
 
   const container = document.getElementById('islandSvgRoot');
   if(container) buildIslandScene(container, ud.island);
@@ -76,11 +82,13 @@ function renderIslandHud(state){
   const nextEl = document.getElementById('islandNextUnlock');
   const countEl = document.getElementById('islandUnlockedCount');
   const weatherEl = document.getElementById('islandWeatherLabel');
+  const seasonEl = document.getElementById('islandSeasonLabel');
   if(levelEl) levelEl.textContent = 'Level ' + state.level;
   if(xpEl) xpEl.textContent = state.xp + ' XP';
   if(barEl) barEl.style.width = xpBarPct + '%';
   if(countEl) countEl.textContent = state.unlocked.length + ' / ' + getIslandAssetsSorted().length + ' unlocked';
   if(weatherEl) weatherEl.textContent = ISLAND_WEATHER_LABELS[state.world.weather] || '☀️ Sunny';
+  if(seasonEl) seasonEl.textContent = ISLAND_SEASON_LABELS[state.world.season] || '🌸 Spring';
   if(nextEl){
     nextEl.textContent = next
       ? `Next: ${next.name} at ${next.unlock.value} XP (${Math.max(0, next.unlock.value - state.xp)} to go)`
@@ -107,6 +115,51 @@ function renderIslandTimeline(state){
   }).join('');
   wrap.innerHTML = rows;
 }
+
+/** Serializes the live SVG to a PNG and offers Share (if supported) or Save. CSS custom properties don't resolve in the isolated document a data-URL image parses in, so their resolved hex values get inlined into the clone first. */
+function takeIslandPhoto(){
+  if(!_islandSvgEl){ showToast('error','Open your island first.'); return; }
+  const clone = _islandSvgEl.cloneNode(true);
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  const styleEl = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+  styleEl.textContent = `svg{ --frost-white:#F8F9F7; --natural-green:#6F9D24; --deep-teal:#2F5F67; --olive-forest:#4A5632; --accent:#8FD65C; --danger:#E85B5B; --warning:#F5B942; --soft-lime:#D6E34B; --text-1:#1C2418; }`;
+  clone.insertBefore(styleEl, clone.firstChild);
+
+  const svgString = new XMLSerializer().serializeToString(clone);
+  const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(svgBlob);
+
+  const img = new Image();
+  img.onload = ()=>{
+    const canvas = document.createElement('canvas');
+    canvas.width = ISLAND_VIEWBOX.w * 2; // 2x for a crisp export
+    canvas.height = ISLAND_VIEWBOX.h * 2;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    URL.revokeObjectURL(url);
+
+    canvas.toBlob(async (blob)=>{
+      if(!blob){ showToast('error','Could not create the image.'); return; }
+      const fileName = 'atlas-island-' + todayStr() + '.png';
+      const file = new File([blob], fileName, { type: 'image/png' });
+
+      if(navigator.canShare && navigator.canShare({ files:[file] })){
+        try{
+          await navigator.share({ files:[file], title:'My Atlas Island', text:'My Atlas Island — Level ' + (userData()?.island?.level || 1) });
+          return;
+        }catch(e){ /* user cancelled, or share failed — fall through to a plain download */ }
+      }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = fileName;
+      a.click();
+      showToast('success','Photo saved.');
+    }, 'image/png');
+  };
+  img.onerror = ()=>{ showToast('error','Could not capture your island.'); URL.revokeObjectURL(url); };
+  img.src = url;
+}
+
 
 /** The reaction hook island-engine.js calls after awardXP() changes state. Kept out of island-engine.js so that file stays DOM-free. */
 function onIslandXPChanged(amount, reason, newlyUnlocked){

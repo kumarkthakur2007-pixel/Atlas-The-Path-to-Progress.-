@@ -74,6 +74,7 @@ function buildIslandScene(containerEl, state){
   refreshSkyAndSun(state);
   renderWeatherLayer(state);
   renderFogLayer(state);
+  renderSeasonalTint(state);
   renderUnlockedAssets(state); // draw everything already unlocked, no popups
 }
 
@@ -206,6 +207,43 @@ function renderFogLayer(state){
   layer.innerHTML = state.world.weather === 'fog'
     ? `<rect class="island-fog-veil" x="-100" y="220" width="${ISLAND_VIEWBOX.w + 200}" height="140" fill="rgba(240,245,240,0.55)"/>`
     : '';
+}
+
+
+/** Ties the island's season to the real calendar month — intentional, not randomized. */
+function pickCurrentSeason(){
+  const month = new Date().getMonth();
+  for(const [season, months] of Object.entries(ISLAND_SEASON_MONTHS)){
+    if(months.includes(month)) return season;
+  }
+  return 'spring';
+}
+
+/** Per-season color tokens applied to the ground/grass/tree layers. Sky/ocean gradients are handled separately in refreshSkyAndSun so they can also account for day/night. */
+const ISLAND_SEASON_TINTS = {
+  spring:  { grass: 'var(--natural-green)', grassTop: 'var(--accent)',      treeFilter: 'none' },
+  summer:  { grass: 'var(--natural-green)', grassTop: '#B8E86B',            treeFilter: 'saturate(1.1)' },
+  monsoon: { grass: '#4C7A22',              grassTop: '#6F9D24',            treeFilter: 'saturate(0.9) brightness(0.95)' },
+  autumn:  { grass: '#8A8F4A',              grassTop: '#C7B25A',            treeFilter: 'sepia(0.35) saturate(1.2)' },
+  winter:  { grass: '#9FB59A',              grassTop: '#C9DCC4',            treeFilter: 'saturate(0.55) brightness(1.05)' }
+};
+
+/** Re-tints grass + trees for the current season. Ground shape itself never changes — only color, matching "objects appear gradually, nothing suddenly changes." */
+function renderSeasonalTint(state){
+  const season = state.world.season || 'spring';
+  const tint = ISLAND_SEASON_TINTS[season] || ISLAND_SEASON_TINTS.spring;
+
+  const grass = document.getElementById('layer-grass');
+  if(grass){
+    const base = grass.querySelector('ellipse:first-child');
+    const top = grass.querySelector('ellipse:last-child');
+    if(base) base.setAttribute('fill', tint.grass);
+    if(top) top.setAttribute('fill', tint.grassTop);
+  }
+  const treeLayer = document.getElementById('layer-tree');
+  if(treeLayer) treeLayer.style.filter = tint.treeFilter;
+  const flowerLayer = document.getElementById('layer-flower');
+  if(flowerLayer) flowerLayer.style.opacity = (season === 'winter') ? '0.45' : '1';
 }
 
 

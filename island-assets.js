@@ -99,6 +99,17 @@ function svgLibrary(x, y){
   </g>`;
 }
 
+function svgPark(x, y){
+  return `<g class="island-asset" transform="translate(${x},${y})">
+    <ellipse cx="0" cy="0" rx="34" ry="10" fill="var(--accent)" opacity="0.35"/>
+    <path d="M -30 2 Q 0 -6 30 2" stroke="var(--frost-white)" stroke-width="3" fill="none" opacity="0.7"/>
+    <g transform="translate(-20,-6)"><rect x="-1.4" y="-14" width="2.8" height="14" fill="var(--olive-forest)"/><ellipse cx="0" cy="-20" rx="10" ry="11" fill="var(--natural-green)"/></g>
+    <g transform="translate(18,-4)"><rect x="-1.4" y="-12" width="2.8" height="12" fill="var(--olive-forest)"/><ellipse cx="0" cy="-17" rx="8.5" ry="9.5" fill="var(--natural-green)"/></g>
+    <circle cx="0" cy="-4" r="5" fill="none" stroke="var(--deep-teal)" stroke-width="1.6"/>
+    <line x1="0" y1="-9" x2="0" y2="-13" stroke="var(--deep-teal)" stroke-width="1.6"/>
+  </g>`;
+}
+
 const ISLAND_ASSET_REGISTRY = {
   flower_1: {
     id: 'flower_1', name: 'Wildflower', category: 'decoration', layer: 'flower',
@@ -129,8 +140,13 @@ const ISLAND_ASSET_REGISTRY = {
     id: 'library_1', name: 'Little Library', category: 'building', layer: 'building',
     unlock: { type: 'xp', value: 5000 }, footprint: { w: 56, h: 55 },
     description: 'Knowledge finds a home here.', render: svgLibrary
+  },
+  park_1: {
+    id: 'park_1', name: 'Community Park', category: 'building', layer: 'building',
+    unlock: { type: 'xp', value: 8000 }, footprint: { w: 64, h: 26 },
+    description: 'A green space for your growing world.', render: svgPark
   }
-  // Phase 3+: park_1, school_1, town_hall_1, temple_1, harbor_1, airport_1,
+  // Phase 4+: school_1, town_hall_1, temple_1, harbor_1, airport_1,
   // civilization_1 — plus animals/effects — all get added here, each with
   // its own render() function above. The engine, renderer, and unlock
   // logic never need to change.
@@ -147,6 +163,15 @@ const ISLAND_WEATHER_TYPES = [
   { id: 'snow',    weight: 1 },
   { id: 'rainbow', weight: 1 }
 ];
+
+/** Northern-hemisphere calendar seasons, used to tint the world — not randomized, tied to the real month so it feels intentional rather than arbitrary. */
+const ISLAND_SEASON_MONTHS = {
+  spring: [2, 3, 4],   // Mar–May
+  summer: [5, 6, 7],   // Jun–Aug
+  monsoon: [8, 9],      // Sep–Oct
+  autumn: [10],          // Nov
+  winter: [11, 0, 1]     // Dec–Feb
+};
 
 /** Registry entries in ascending unlock-value order (used by the engine and the HUD's "next unlock" preview). */
 function getIslandAssetsSorted(){

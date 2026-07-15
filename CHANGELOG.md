@@ -2,6 +2,25 @@
 
 All notable changes to Atlas are documented here.
 
+## [2.3.0] — Atlas Island, Phase 3
+
+Seasons, Photo Mode, and the next building on the XP ladder.
+
+**Added**
+- Seasons — Spring, Summer, Monsoon, Autumn, Winter, tied to the real calendar month (not randomized, so it feels intentional). Re-tints grass and trees; winter also dims flowers to a dormant look. Ground shape itself never changes, only color — consistent with "objects appear gradually, nothing suddenly changes."
+- Photo Mode — a "Photo" button on the Island page exports the current island as a PNG. Uses the Web Share API when available (falls back to a plain download otherwise)
+- Community Park unlock at 8,000 XP — third Building-layer object
+- Season HUD chip next to Weather/Level
+
+**Changed**
+- `island-assets.js` — `park_1` registry entry + its `render()` function; `ISLAND_SEASON_MONTHS` mapping
+- `island-render.js` — `pickCurrentSeason()`, `ISLAND_SEASON_TINTS`, `renderSeasonalTint()`, hooked into `buildIslandScene()`
+- `island.js` — season assignment (mirrors the weather/day-night pattern), season HUD label, `takeIslandPhoto()` — which inlines the app's CSS custom properties as literal hex values into a cloned SVG before export, since `var(--x)` references don't resolve in the isolated document a data-URL image parses in
+- `index.html` — season chip, Photo button
+- `service-worker.js` — version bumped to `atlas-v2.3.0`
+
+**Verified before ship** — same full sweep as Phases 1 and 2: zero JS syntax errors, all 41 `onclick` handlers resolve, all `getElementById()` calls resolve (including confirming `layer-flower`/`layer-tree` were already part of Phase 1's reserved layer scaffold), CSS brace-balanced, HTML section tags balanced (16/16).
+
 ## [2.2.0] — Atlas Island, Phase 2
 
 Weather, two new buildings, and a visible history — all built on Phase 1's foundation without changing its core logic.

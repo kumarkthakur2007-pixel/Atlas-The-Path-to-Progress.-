@@ -234,6 +234,9 @@
         <div><div class="page-eyebrow">Overview</div><div class="page-title">Atlas Island</div><div class="page-sub">Your discipline, growing into a living world.</div></div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <div class="island-hud-chip glass">
+            <span id="islandSeasonLabel">🌸 Spring</span>
+          </div>
+          <div class="island-hud-chip glass">
             <span id="islandWeatherLabel">☀️ Sunny</span>
           </div>
           <div class="island-hud-chip glass">
@@ -241,6 +244,7 @@
             <span class="island-hud-dot"></span>
             <span id="islandXpLabel">0 XP</span>
           </div>
+          <button class="btn btn-ghost btn-sm" onclick="takeIslandPhoto()"><i data-lucide="camera" style="width:14px;height:14px"></i> Photo</button>
         </div>
       </div>
 
@@ -250,7 +254,7 @@
 
       <div class="card glass island-progress-card">
         <div class="island-progress-top">
-          <span class="island-progress-label" id="islandUnlockedCount">0 / 6 unlocked</span>
+          <span class="island-progress-label" id="islandUnlockedCount">0 / 7 unlocked</span>
           <span class="island-progress-next" id="islandNextUnlock">Next: Wildflower at 100 XP (100 to go)</span>
         </div>
         <div class="bar-track"><div class="bar-fill" id="islandXpBar" style="width:0%"></div></div>

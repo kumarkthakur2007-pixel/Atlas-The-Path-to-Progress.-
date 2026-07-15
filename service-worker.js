@@ -1,4 +1,4 @@
-const VERSION = 'atlas-v2.2.0';
+const VERSION = 'atlas-v2.3.0';
 const CORE_CACHE = `${VERSION}-core`;
 const CDN_CACHE = `${VERSION}-cdn`;
 
